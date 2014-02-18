@@ -1,0 +1,21 @@
+
+hedge very(x) x^2;
+hedge slightly(x) (x ^ 1.25) && (1 - (x ^ 2));
+
+function S(x) {
+
+  piecewise {
+    begin .. A = 0;
+    A .. B     = 2*((x-A)/(C-A))^2;
+    B .. C     = 1-2*((x-A)/(C-A))^2;
+    C .. end   = 1;
+  }
+
+}
+
+input {
+  int theta(-128,127) {
+    nb = -1, 0, 1;
+  }
+  
+}

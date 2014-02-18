@@ -1,0 +1,64 @@
+
+PROGRAM Pend
+
+
+    INPUT Theta	TYPE int
+	RANGE  -128 TO 127
+
+	FUZZY NM MEMBERS -128,1.0 -64,1.0 -32,0.0
+	FUZZY NS MEMBERS -64,0.0 -32,1.0 0,0.0
+	FUZZY Z  MEMBERS -32,0.0 0,1.0 32,0.0
+	FUZZY PS MEMBERS 0,0.0 32,1.0 64,0.0
+	FUZZY PM MEMBERS 32,0.0 64,1.0 127,1.0
+
+
+    INPUT dTheta TYPE int
+	RANGE -128 TO 127
+
+	FUZZY NM MEMBERS -128,1.0 -64,1.0 -32,0.0
+	FUZZY NS MEMBERS -64,0.0 -32,1.0 0,0.0
+	FUZZY Z  MEMBERS -32,0.0 0,1.0 32,0.0
+	FUZZY PS MEMBERS 0,0.0 32,1.0 64,0.0
+	FUZZY PM MEMBERS 32,0.0 64,1.0 127,1.0
+
+
+    OUTPUT Current TYPE int
+	RANGE -128 TO 127
+
+	FUZZY NM MEMBERS -128,1.0 -64,1.0 -32,0.0
+	FUZZY NS MEMBERS -64,0.0 -32,1.0 0,0.0
+	FUZZY Z  MEMBERS -32,0.0 0,1.0 32,0.0
+	FUZZY PS MEMBERS 0,0.0 32,1.0 64,0.0
+	FUZZY PM MEMBERS 32,0.0 64,1.0 127,1.0
+
+
+
+    RULE Rule1   IF (Theta IS PM) AND (dTheta IS Z) THEN Current=NM
+
+    RULE Rule2   IF (Theta IS Z) AND (dTheta IS NM) THEN Current=PM
+
+    RULE Rule3   IF (Theta IS Z) AND (dTheta IS PM) THEN Current=NM
+
+    RULE Rule4   IF (Theta IS NM) AND (dTheta IS Z) THEN Current=PM
+
+    RULE Rule5   IF (Theta IS PS) AND (dTheta IS Z) THEN Current=NS
+
+    RULE Rule6   IF (Theta IS Z) AND (dTheta IS NS) THEN Current=PS
+
+    RULE Rule7   IF (Theta IS NS) AND (dTheta IS PS) THEN Current=Z
+
+    RULE Rule8   IF (Theta IS Z) AND (dTheta IS PS) THEN Current=NS
+
+    RULE Rule9   IF (Theta IS NS) AND (dTheta IS Z) THEN Current=PS
+
+    RULE Rule10  IF (Theta IS PS) AND (dTheta IS NS) THEN Current=Z
+
+    RULE Rule11  IF (Theta IS Z) AND (dTheta IS Z) THEN Current=Z
+
+    RULE New1    IF (Theta IS NM) OR (Theta IS NS) THEN Current=PM
+
+    RULE New2    IF (Theta IS PM) OR (Theta IS PS) THEN Current=NM
+
+
+    REASONING MAX-MIN
+

@@ -1,0 +1,81 @@
+
+PROGRAM Yan
+
+	HEDGE VERY   		X ^ 2
+
+	FUNCTION TRIANGLE
+		FROM < TO A IS  0
+		FROM A TO B IS  (X - A) / (B - A)
+		FROM B TO C IS  1 - ((X - B) / (C - B))
+		FROM C TO > IS  0
+
+	INPUT Theta	TYPE int
+		RANGE -50 TO 50 STEP 1
+
+		FUZZY NM  MEMBERS (-50,1) (-40,1) (-30,0)
+		FUZZY NS  FUNCTION TRIANGLE (-35 -25 -15)
+		FUZZY Z   FUNCTION TRIANGLE (-20 0 20)
+		FUZZY PS  FUNCTION TRIANGLE (15 25 35)
+		FUZZY PM  MEMBERS  30,0 40,1 50,1
+
+
+	INPUT dTheta  TYPE int
+		RANGE -20 TO 20
+
+		FUZZY NM MEMBERS -20,1 -15,1 -10,0
+		FUZZY NS MEMBERS -15,0 -10,1 -5,0
+		FUZZY Z  MEMBERS -10,0 0,1 10,0
+		FUZZY PS MEMBERS 5,0 10,1 15,0
+		FUZZY PM MEMBERS 10,0 15,1 20,1
+
+
+	OUTPUT  Current1  TYPE float
+		RANGE -5 TO 5 STEP 0.1
+
+		FUZZY NM MEMBERS -5,1 -2,1 -1,0
+		FUZZY NS MEMBERS -2,0 -1,1 0,0
+		FUZZY Z  MEMBERS -1,0 0,1 1,0
+		FUZZY PS MEMBERS 0,0 1,1 2,0
+		FUZZY PM MEMBERS 1,0 2,1 5,1
+
+
+	OUTPUT  Current2  TYPE float
+		RANGE -5 TO 5 STEP 0.2
+
+		FUZZY NM MEMBERS -5,1 -2,1 -1,0
+		FUZZY NS MEMBERS -2,0 -1,1 0,0
+		FUZZY Z  MEMBERS -1,0 0,1 1,0
+		FUZZY PS MEMBERS 0,0 1,1 2,0
+		FUZZY PM MEMBERS 1,0 2,1 5,1
+
+
+    RULE Rule1   IF (Theta IS PM) AND (dTheta IS Z) THEN Current1=NM ALSO Current2=NM
+
+    RULE Rule2   IF (Theta IS Z) AND (dTheta IS NM) THEN Current=PM  ALSO Current2=PM
+
+    RULE Rule3   IF (Theta IS Z) AND (dTheta IS PM) THEN Current=NM  ALSO Current2=NM
+
+    RULE Rule4   IF (Theta IS NM) AND (dTheta IS Z) THEN Current=PM  ALSO Current2=PM
+
+    RULE Rule5   IF (Theta IS PS) AND (dTheta IS Z) THEN Current= VERY NS ALSO Current2= NS
+
+    RULE Rule6   IF (Theta IS Z) AND (dTheta IS NS) THEN Current=PS ALSO Current2= VERY PS
+
+    RULE Rule7   IF (Theta IS NS) AND (dTheta IS PS) THEN Current=Z ALSO Current2=Z
+
+    RULE Rule8   IF (Theta IS Z) AND (dTheta IS PS) THEN Current= VERY NS ALSO Current2=NS
+
+    RULE Rule9   IF (Theta IS NS) AND (dTheta IS Z) THEN Current=PS ALSO Current2=PS
+
+    RULE Rule10  IF (Theta IS PS) AND (dTheta IS NS) THEN Current=Z ALSO Current2=Z
+
+    RULE Rule11  IF (Theta IS Z) AND (dTheta IS Z) THEN Current=Z ALSO Current2=Z
+
+    RULE New1    IF (Theta IS NM) OR (Theta IS NS) THEN Current=PM ALSO Current2=PM
+
+    RULE New2    IF (Theta IS PM) OR (Theta IS PS) THEN Current=NM ALSO Current2=NM
+
+
+    REASONING MAX-MIN
+
+
