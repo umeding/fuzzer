@@ -148,11 +148,14 @@ public class Variable implements NameBearer {
 	/**
 	 * Add a fuzzy member to this variable.
 	 *
+	 * @param <T> the member type
 	 * @param name name of the fuzzy member
 	 * @param content the content.
+	 * @return  the member
 	 */
-	public void addMember(String name, FuzzyPointEvaluatable content) {
+	public <T extends FuzzyPointEvaluatable> T addMember(String name, T content) {
 		members.put(name, content);
+		return content;
 	}
 
 	/**

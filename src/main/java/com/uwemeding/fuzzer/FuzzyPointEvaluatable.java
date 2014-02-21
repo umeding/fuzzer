@@ -18,4 +18,17 @@ public interface FuzzyPointEvaluatable {
 	 */
 	Number calculateFuzzyMember(Number step);
 
+	/**
+	 * Type name.
+	 *
+	 * @return the type name
+	 */
+	String getTypeName();
+
+	/**
+	 * Get a loggable string for this.
+	 *
+	 * @return a string
+	 */
+	String toLogString();
 }

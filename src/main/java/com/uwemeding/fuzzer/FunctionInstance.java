@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,12 +11,15 @@ import java.util.Map;
  *
  * @author uwe
  */
-public class FunctionInstance extends ArrayList<Number> implements FuzzyPointEvaluatable {
+public class FunctionInstance implements FuzzyPointEvaluatable {
 
 	private final Function function;
 	private final Map<String, Number> bindings;
 
 	public FunctionInstance(Function function) {
+		if (function == null) {
+			throw new NullPointerException("function cannot be null");
+		}
 		this.function = function;
 		this.bindings = new HashMap<>();
 	}
@@ -30,11 +32,13 @@ public class FunctionInstance extends ArrayList<Number> implements FuzzyPointEva
 	 * Bind a parameter number to a function.
 	 *
 	 * @param number the number
+	 * @return this function instance
 	 */
-	public void bindParameter(Number number) {
-		int pos = size();
+	public FunctionInstance bindParameter(Number number) {
+		int pos = bindings.size();
 		String parameterName = function.getNthParameter(pos);
 		bindings.put(parameterName, number);
+		return this;
 	}
 
 	/**
@@ -54,6 +58,30 @@ public class FunctionInstance extends ArrayList<Number> implements FuzzyPointEva
 	@Override
 	public Number calculateFuzzyMember(Number step) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public String getTypeName() {
+		return "function call";
+	}
+
+	@Override
+	public String toLogString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(function.getName());
+		String delim = " with ";
+		for (String parameter : function.parameters()) {
+			String n;
+			try {
+				n = String.valueOf(getParameter(parameter));
+			} catch (FuzzerException r) {
+				n = "<undefined>";
+			}
+			sb.append(delim).append(parameter).append("=").append(n);
+			delim = ", ";
+		}
+
+		return sb.toString();
 	}
 
 	@Override

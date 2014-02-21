@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,9 +16,9 @@ import org.junit.Test;
  *
  * @author uwe
  */
-public class VariableIterationTest {
+public class VariableStepIterationTest {
 
-	public VariableIterationTest() {
+	public VariableStepIterationTest() {
 	}
 
 	@BeforeClass

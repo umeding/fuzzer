@@ -31,7 +31,7 @@ public class ProgramPopulateTest extends TestCase {
 
 	// test to populate a program
 	@Test
-	public void populateProgram() {
+	public void testPopulateProgram() {
 
 		Program p = new Program("test");
 
@@ -48,11 +48,16 @@ public class ProgramPopulateTest extends TestCase {
 		v = p.addInput("x", -10., 10, 2.);
 
 		v = p.addOutput("y", -10., 10, 2.);
+		PointList m = v.addMember("NM", new PointList().add(-128, 1.0).add(-64, 1.0).add(-32, 0));
+		m = v.addMember("NS", new PointList().add(-64, 0).add(-32, 1.0).add(0, 0));
+		FunctionInstance inst = v.addMember("Z", new FunctionInstance(f).bindParameter(1).bindParameter(2).bindParameter(3));
 
 		assertEquals("Hedge count mismatch", 2, p.hedges().size());
 		assertEquals("Function count mismatch", 1, p.functions().size());
 		assertEquals("Input var count mismatch", 2, p.inputs().size());
 		assertEquals("Output var count mismatch", 1, p.outputs().size());
+
+		p.dump(System.out);
 	}
 
 	// test for duplicate variable detection

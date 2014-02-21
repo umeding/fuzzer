@@ -253,6 +253,8 @@ public class Program {
 		items.put(itemName, item);
 	}
 
+	private static final String FMT = "  %-15s : %15s %s%n";
+
 	/**
 	 * Dump the content of the program.
 	 *
@@ -262,36 +264,35 @@ public class Program {
 		fp.println("Program " + name);
 
 		String dashes = "----------------------------------------------------------------------";
-		String fmt = "%10s : %15s %s%n";
 
 		// header
 		fp.println(dashes);
-		fp.format(fmt, "Name", "Type", "Content");
+		fp.format(FMT, "Name", "Type", "Content");
 		fp.println(dashes);
 		fp.println();
 
 		Set<String> names = new TreeSet<>(hedges.keySet());
 		for (String name : names) {
 			Hedge hedge = hedges.get(name);
-			fp.format(fmt, name, "<hedge>", hedge.getExpression());
+			fp.format(FMT, name, "<hedge>", hedge.getExpression());
 		}
 
 		names = new TreeSet<>(functions.keySet());
 		for (String name : names) {
 			Function function = functions.get(name);
-			fp.format(fmt, name, "<func>", function.toLogString());
+			fp.format(FMT, name, "<func def>", function.toLogString());
 		}
 
 		names = new TreeSet<>(inputs.keySet());
 		for (String name : names) {
 			Variable var = inputs.get(name);
-			fp.format(fmt, name, "<input var>", var.toLogString());
+			dump(fp, var, "input");
 		}
 
 		names = new TreeSet<>(outputs.keySet());
 		for (String name : names) {
 			Variable var = outputs.get(name);
-			fp.format(fmt, name, "<output var>", var.toLogString());
+			dump(fp, var, "output");
 		}
 
 		// we are done
@@ -300,4 +301,15 @@ public class Program {
 		fp.println();
 	}
 
+	private void dump(PrintStream fp, Variable var, String varType) {
+		fp.format(FMT, var.getName(), "<" + varType + " var>", var.toLogString());
+		if (var.memberNames().isEmpty()) {
+			return;
+		}
+
+		for (String memberName : var.memberNames()) {
+			FuzzyPointEvaluatable member = var.getMember(memberName);
+			fp.format(FMT, var.getName() + "#" + memberName, "<" + member.getTypeName() + ">", member.toLogString());
+		}
+	}
 }

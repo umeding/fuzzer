@@ -4,6 +4,7 @@
 package com.uwemeding.fuzzer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -104,6 +105,15 @@ public class Function implements NameBearer {
 	 */
 	public String getNthParameter(int n) {
 		return getNth(n, parameters, "parameters");
+	}
+
+	/**
+	 * Get the list of parameters
+	 *
+	 * @return the parameters
+	 */
+	public Collection<String> parameters() {
+		return parameters;
 	}
 
 	/**
