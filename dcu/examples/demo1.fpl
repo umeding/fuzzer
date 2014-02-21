@@ -2,15 +2,20 @@
 hedge very(x) x^2;
 hedge slightly(x) (x ^ 1.25) && (1 - (x ^ 2));
 
-function S(x) {
-
+function S(x) with A,B,C {
   piecewise {
-    begin .. A = 0;
-    A .. B     = 2*((x-A)/(C-A))^2;
-    B .. C     = 1-2*((x-A)/(C-A))^2;
-    C .. end   = 1;
+    begin .. A : 0;
+    A .. B     : 2*((x-A)/(C-A))^2;
+    B .. C     : 1-2*((x-A)/(C-A))^2;
+    C .. end   : 1;
   }
+}
 
+function PI(x),B {
+  piecewise {
+    begin .. B-A : 0;
+    B-A .. B-(A/2) : 
+  }
 }
 
 input {

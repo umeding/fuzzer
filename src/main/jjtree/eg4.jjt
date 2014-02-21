@@ -3,6 +3,7 @@ options {
   MULTI=true;
   VISITOR=true;
   NODE_DEFAULT_VOID=true;
+//  NODE_PREFIX="FPL";
 }
 
 PARSER_BEGIN(Eg4)
@@ -44,7 +45,9 @@ SKIP :
 
 TOKEN :
 {
-  
+  < PROGRAM: "program" >
+|
+  < HEDGE: "hedge" >
 }
 
 TOKEN : /* LITERALS */
@@ -74,15 +77,39 @@ TOKEN : /* IDENTIFIERS */
 /** Main production. */
 ASTStart Start() #Start : {}
 {
-  Expression() ";"
+  Program() 
   { return jjtThis; }
 }
 
+void Program()  : {}
+{
+    "program" <IDENTIFIER> 
+    ProgramBody()
+}
+
+void ProgramBody() : {}
+{
+   "{" ( Hedge() )* "}"
+}
+
+void Hedge() : {} 
+{
+  (
+    "hedge" <IDENTIFIER> "(" <IDENTIFIER> ")" FullExpression() ";"
+  ) #Hedge(>1)
+}
+
+void FullExpression() : {}
+{
+  ( 
+    Expression() 
+  ) #Expr(>1)
+}
 
 /** An Expression. */
 void Expression() : {}
 {
-  AdditiveExpression()
+  AdditiveExpression() 
 }
 
 /** An Additive Expression. */
