@@ -46,8 +46,10 @@ SKIP :
 TOKEN :
 {
   < PROGRAM: "program" >
-|
-  < HEDGE: "hedge" >
+| < HEDGE: "hedge" >
+| < FUNCTION: "function" >
+| < INPUT: "input" >
+| < OUTPUT: "output" >
 }
 
 TOKEN : /* LITERALS */
