@@ -72,7 +72,7 @@ public class PiecewiseFunction extends Function {
 			if (fromMatch && toMatch) {
 				String from = r.getFromExpr() == null ? "<" : r.getFromExpr().getExpression();
 				String to = r.getToExpr() == null ? ">" : r.getToExpr().getExpression();
-				System.out.println("match " + from + "->" + fromValue + " .. " + to + "->" + toValue + " for " + arg);
+				System.out.print("match " + from + "->" + fromValue + " .. " + to + "->" + toValue + " for " + arg);
 				funcBody = r.getFuncBody();
 				break;
 			}
@@ -82,6 +82,7 @@ public class PiecewiseFunction extends Function {
 			throw new FuzzerException(call.getFunction().getName() + ": no range found for " + arg);
 		}
 		Object result = funcBody.evaluate(context);
+		System.out.println(" "+funcBody.getExpression()+" -> "+result);
 		if (result instanceof Number) {
 			return ((Number) result).doubleValue();
 		} else {

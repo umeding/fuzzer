@@ -61,7 +61,8 @@ PROGRAM Yan
 		IF (Tta IS PS) AND ((dTheta IS N) OR (dTheta IS Z)) THEN Veloc=Z
 
 	RULE Rue0004
-		IF (Tta IS VERY NB) AND (dTheta IS Z) THEN Veloc=NB
+		//IF (Tta IS VERY NB) AND (dTheta IS Z) THEN Veloc=NB
+		IF (Tta IS NB) AND (dTheta IS Z) THEN Veloc=NB
 
 	RULE Rue0005
 		IF (Tta IS NS) AND (dTheta IS N) THEN Veloc=NS
