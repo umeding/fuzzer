@@ -3,9 +3,9 @@
  */
 package com.uwemeding.fuzzer;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,7 +20,7 @@ public class Variable implements NameBearer {
 	private final Number from;
 	private final Number to;
 	private final Number step;
-	private final Map<String, FuzzyPointEvaluatable> members;
+	private final List<Member> members;
 
 	public <T extends Number> Variable(String name, T from, T to, T step) {
 		if (name == null) {
@@ -43,7 +43,7 @@ public class Variable implements NameBearer {
 		this.to = to;
 		this.step = step;
 
-		this.members = new HashMap<>();
+		this.members = new ArrayList<>();
 	}
 
 	public <T extends Number> Variable(String name, T from, T to) {
@@ -76,7 +76,7 @@ public class Variable implements NameBearer {
 	 * @return the start
 	 */
 	public <T extends Number> T getFrom() {
-		return (T)from;
+		return (T) from;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Variable implements NameBearer {
 	 * @return the end
 	 */
 	public <T extends Number> T getTo() {
-		return (T)to;
+		return (T) to;
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class Variable implements NameBearer {
 	 * @return the step
 	 */
 	public <T extends Number> T getStep() {
-		return (T)step;
+		return (T) step;
 	}
 
 	@Override
@@ -128,7 +128,12 @@ public class Variable implements NameBearer {
 	 * @return true/false
 	 */
 	public boolean haveMember(String name) {
-		return members.containsKey(name);
+		for (Member member : members) {
+			if (member.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -137,25 +142,39 @@ public class Variable implements NameBearer {
 	 * @param memberName the member name
 	 * @return the fuzzy member
 	 */
-	public FuzzyPointEvaluatable getMember(String memberName) {
-		FuzzyPointEvaluatable content = members.get(memberName);
-		if (content == null) {
-			throw new FuzzerException(name + ": member '" + memberName + "' not found");
+	public Member getMember(String memberName) {
+		for (Member member : members) {
+			if (member.getName().equals(memberName)) {
+				return member;
+			}
 		}
-		return content;
+		throw new FuzzerException(name + ": member '" + memberName + "' not found");
 	}
 
 	/**
 	 * Add a fuzzy member to this variable.
 	 *
-	 * @param <T> the member type
-	 * @param name name of the fuzzy member
-	 * @param content the content.
-	 * @return  the member
+	 * @param memberName member name
+	 * @param functionCall the function call
+	 * @return the member
 	 */
-	public <T extends FuzzyPointEvaluatable> T addMember(String name, T content) {
-		members.put(name, content);
-		return content;
+	public Member addMember(String memberName, FunctionCall functionCall) {
+		if (haveMember(memberName)) {
+			throw new FuzzerException(memberName + ": member already exists of variable '" + name + "'");
+		}
+		Member member = new Member(memberName, functionCall);
+		members.add(member);
+		return member;
+	}
+
+	/**
+	 * Add a fuzzy member to this variable.
+	 *
+	 * @param memberName the member name
+	 * @return the member
+	 */
+	public Member addMember(String memberName) {
+		return addMember(memberName, null);
 	}
 
 	/**
@@ -163,8 +182,8 @@ public class Variable implements NameBearer {
 	 *
 	 * @return the names
 	 */
-	public Collection<String> memberNames() {
-		return members.keySet();
+	public Collection<Member> members() {
+		return members;
 	}
 
 	public String toLogString() {
@@ -172,4 +191,43 @@ public class Variable implements NameBearer {
 		String dataTypeName = type.getName().substring(pos + 1);
 		return dataTypeName + " [" + from + ", " + to + "] step by " + step;
 	}
+
+	// ========== EVALUATIONS ================================================
+	/**
+	 * Calculate the full fuzzy space for this variable.
+	 */
+	public void calculateFuzzySpace() {
+		double start = getFrom().doubleValue();
+		double stop = getTo().doubleValue();
+		double step = getStep().doubleValue();
+
+		// enumerate the variable range
+		for (Member member : members()) {
+			System.out.println("Member " + member.getName());
+			if (member.haveFunctionCall()) {
+				for (double i = start; i <= stop; i += step) {
+					member.calculateFunctionAt(i);
+				}
+			} else {
+				member.calculateEndPoints(start, stop);
+				for (double i = start; i <= stop; i += step) {
+					member.calculateValueAt(i);
+				}
+			}
+		}
+
+		// find the max over all members
+		double yMax = Double.MIN_VALUE;
+		for (Member member : members()) {
+			double memberMax = member.findMax();
+			yMax = memberMax > yMax ? memberMax : yMax;
+		}
+
+		// normalize exploded values into a byte range
+		for (Member member : members()) {
+			member.normalizeY(yMax, 255);
+		}
+
+	}
+
 }

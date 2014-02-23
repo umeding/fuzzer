@@ -3,6 +3,7 @@
  */
 package com.uwemeding.fuzzer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,12 +12,12 @@ import java.util.Map;
  *
  * @author uwe
  */
-public class FunctionInstance implements FuzzyPointEvaluatable {
+public class FunctionCall {
 
 	private final Function function;
 	private final Map<String, Number> bindings;
 
-	public FunctionInstance(Function function) {
+	public FunctionCall(Function function) {
 		if (function == null) {
 			throw new NullPointerException("function cannot be null");
 		}
@@ -34,11 +35,20 @@ public class FunctionInstance implements FuzzyPointEvaluatable {
 	 * @param number the number
 	 * @return this function instance
 	 */
-	public FunctionInstance bindParameter(Number number) {
+	public FunctionCall bindParameter(Number number) {
 		int pos = bindings.size();
 		String parameterName = function.getNthParameter(pos);
 		bindings.put(parameterName, number);
 		return this;
+	}
+
+	/**
+	 * Get the parameter names.
+	 *
+	 * @return the parameter names
+	 */
+	public Collection<String> parameterNames() {
+		return bindings.keySet();
 	}
 
 	/**
@@ -55,17 +65,16 @@ public class FunctionInstance implements FuzzyPointEvaluatable {
 		return number;
 	}
 
-	@Override
-	public Number calculateFuzzyMember(Number step) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	/**
+	 * Invoke the function.
+	 *
+	 * @param arg is the argument
+	 * @return the value at arg
+	 */
+	public double invoke(double arg) {
+		return function.call(this, arg);
 	}
 
-	@Override
-	public String getTypeName() {
-		return "function call";
-	}
-
-	@Override
 	public String toLogString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(function.getName());

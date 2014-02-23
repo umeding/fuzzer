@@ -4,6 +4,7 @@
 package com.uwemeding.fuzzer;
 
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,22 +99,35 @@ public class Program {
 	/**
 	 * Add a function to this program.
 	 *
+	 * @param <T> the function type
 	 * @param function the function
 	 * @return the function
 	 */
-	public Function addFunction(Function function) {
+	public <T extends Function> T addFunction(T function) {
 		addItem(function, functions, "functions");
 		return function;
 	}
 
 	/**
-	 * Add a function with a name.
+	 * Add an external function.
 	 *
-	 * @param name the name of the function
+	 * @param klass external function class
+	 * @param m method with that class
 	 * @return the function
 	 */
-	public Function addFunction(String name) {
-		return addFunction(new Function(name));
+	public ExternalFunction addExternalFunction(Class klass, Method m) {
+		return addFunction(new ExternalFunction(klass, m));
+	}
+
+	/**
+	 * Add a piecewise function.
+	 *
+	 * @param name is the name of the function
+	 * @param argumentName argument name
+	 * @return the function
+	 */
+	public PiecewiseFunction addPiecewiseFunction(String name, String argumentName) {
+		return addFunction(new PiecewiseFunction(name, argumentName));
 	}
 
 	/**
@@ -303,13 +317,12 @@ public class Program {
 
 	private void dump(PrintStream fp, Variable var, String varType) {
 		fp.format(FMT, var.getName(), "<" + varType + " var>", var.toLogString());
-		if (var.memberNames().isEmpty()) {
+		if (var.members().isEmpty()) {
 			return;
 		}
 
-		for (String memberName : var.memberNames()) {
-			FuzzyPointEvaluatable member = var.getMember(memberName);
-			fp.format(FMT, var.getName() + "#" + memberName, "<" + member.getTypeName() + ">", member.toLogString());
+		for (Member member : var.members()) {
+			fp.format(FMT, var.getName() + "#" + member.getName(), "<member>", member.toLogString());
 		}
 	}
 }

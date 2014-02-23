@@ -3,11 +3,9 @@
  */
 package com.uwemeding.fuzzer;
 
-import static java.lang.StrictMath.E;
+import java.lang.reflect.Method;
 import junit.framework.TestCase;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -39,21 +37,30 @@ public class ProgramPopulateTest extends TestCase {
 		p.addHedge("slightly", "x", "x^1.2&&1.0-x^2.0");
 
 		Function f;
-		f = p.addFunction("S");
-		f.addArgument("x");
+		f = p.addPiecewiseFunction("S", "x");
 		f.addParameter("A", "B", "C");
 
+		// Add an external function
+		try {
+			Class klass = Math.class;
+			Method method = klass.getDeclaredMethod("sin", double.class);
+			Function extern = p.addExternalFunction(klass, method);
+
+		} catch (NoSuchMethodException | SecurityException e) {
+			fail(e.getMessage());
+		}
 		Variable v;
 		v = p.addInput("d", -3, 3, 1);
 		v = p.addInput("x", -10., 10, 2.);
 
 		v = p.addOutput("y", -10., 10, 2.);
-		PointList m = v.addMember("NM", new PointList().add(-128, 1.0).add(-64, 1.0).add(-32, 0));
-		m = v.addMember("NS", new PointList().add(-64, 0).add(-32, 1.0).add(0, 0));
-		FunctionInstance inst = v.addMember("Z", new FunctionInstance(f).bindParameter(1).bindParameter(2).bindParameter(3));
+		Member m = v.addMember("NM").add(-128, 1.0).add(-64, 1.0).add(-32, 0);
+		m = v.addMember("NS").add(-64, 0).add(-32, 1.0).add(0, 0);
+		FunctionCall call = new FunctionCall(f).bindParameter(1).bindParameter(2).bindParameter(3);
+		v.addMember("Z", call);
 
 		assertEquals("Hedge count mismatch", 2, p.hedges().size());
-		assertEquals("Function count mismatch", 1, p.functions().size());
+		assertEquals("Function count mismatch", 2, p.functions().size());
 		assertEquals("Input var count mismatch", 2, p.inputs().size());
 		assertEquals("Output var count mismatch", 1, p.outputs().size());
 

@@ -9,19 +9,19 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Function definition.
+ * Unary function definition.
  *
  * @author uwe
  */
-public class Function implements NameBearer {
+public abstract class Function implements NameBearer {
 
 	private final String name;
-	private final List<String> arguments;
+	private final String argumentName;
 	private final List<String> parameters;
 
-	public Function(String name) {
+	public Function(String name, String argumentName) {
 		this.name = name;
-		this.arguments = new ArrayList<>();
+		this.argumentName = argumentName;
 		this.parameters = new ArrayList<>();
 	}
 
@@ -36,39 +36,12 @@ public class Function implements NameBearer {
 	}
 
 	/**
-	 * Add a function argument.
+	 * Get the argument name.
 	 *
-	 * @param args the argument(s)
+	 * @return the argument name
 	 */
-	public void addArgument(String... args) {
-
-		for (String arg : args) {
-			for (String knownArg : arguments) {
-				if (arg.equals(knownArg)) {
-					throw new FuzzerException(name + ": argument '" + arg + "' already defined");
-				}
-			}
-			arguments.add(arg);
-		}
-	}
-
-	/**
-	 * Get the argument count.
-	 *
-	 * @return the argument count
-	 */
-	public int argumentCount() {
-		return arguments.size();
-	}
-
-	/**
-	 * Get the nth argument.
-	 *
-	 * @param n position
-	 * @return the argument
-	 */
-	public String getNthArgument(int n) {
-		return getNth(n, arguments, "arguments");
+	public String getArgumentName() {
+		return argumentName;
 	}
 
 	/**
@@ -156,15 +129,10 @@ public class Function implements NameBearer {
 
 	public String toLogString() {
 		StringBuilder sb = new StringBuilder();
-		String delim = "(";
-		for (String arg : arguments) {
-			sb.append(delim).append(arg);
-			delim = ", ";
-		}
-		sb.append(")");
+		sb.append("(").append(argumentName).append(")");
 
 		if (!parameters.isEmpty()) {
-			delim = " with parameters (";
+			String delim = " with parameters (";
 			for (String parameter : parameters) {
 				sb.append(delim).append(parameter);
 				delim = ", ";
@@ -178,4 +146,14 @@ public class Function implements NameBearer {
 	public String toString() {
 		return "Function{" + "name=" + name + '}';
 	}
+
+	/**
+	 * Call the function.
+	 *
+	 * @param call the function call parameters
+	 * @param arg the argument
+	 * @return the value
+	 */
+	public abstract double call(FunctionCall call, double arg);
+
 }
