@@ -77,8 +77,8 @@ public class VariableMembersTest {
 		PiecewiseFunction s = new PiecewiseFunction("S", "x");
 		s.addParameter("A", "B", "C");
 		s.add("<", "A", "0");
-		s.add("A", "B", "2*((x-A)/(C-A))^2");
-		s.add("B", "C", "1 - (2*((x-C)/(C-A))^2)");
+		s.add("A", "B", "2*(((x-A)/(C-A))^2)");
+		s.add("B", "C", "1 - (2*(((x-C)/(C-A))^2))");
 		s.add("C", ">", "1");
 
 		FunctionCall sCall = new FunctionCall(s);
@@ -95,9 +95,9 @@ public class VariableMembersTest {
 		PiecewiseFunction pi = new PiecewiseFunction("PI", "x");
 		pi.addParameter("A", "B");
 		pi.add("<", "B-A", "0");
-		pi.add("B-A", "B-(A/2)", "2*((x-2*(B-A))/A)^2");
-		pi.add("B-(A/2)", "B+(A/2)", "1 - 2*((x-B)/A)^2");
-		pi.add("B+(A/2)", "B+A", "2*((x-(B+A))/A)^2");
+		pi.add("B-A", "B-(A/2)", "2*(((x-(B-A))/A)^2)");
+		pi.add("B-(A/2)", "B+(A/2)", "1 - (2*(((x-B)/A)^2))");
+		pi.add("B+(A/2)", "B+A", "2*(((x-(B+A))/A)^2)");
 		pi.add("B+A", ">", "0");
 
 		FunctionCall piCall = new FunctionCall(pi);
@@ -116,16 +116,18 @@ public class VariableMembersTest {
 
 		v.calculateFuzzySpace();
 
-		dumpNormalized(nb);
-		dumpNormalized(ns);
+		dumpNormalized(nb, ns, z, ps, pb);
 	}
-	
-	private void dumpNormalized(Member m) {
-		System.out.println("Member "+m.getName());
-		int count = 0;
-		for (Integer i : m.normalized()) {
-			System.out.println(count+" ---> " + i);
-			count++;
+
+	private void dumpNormalized(Member... members) {
+		int len = members[0].normalized().size();
+		for (int i = 0; i < len; i++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(i).append(" ");
+			for (Member m : members) {
+				sb.append(m.normalized().get(i)).append(" ");
+			}
+			System.out.println(sb.toString());
 		}
 	}
 }

@@ -246,7 +246,7 @@ public class Member {
 	 *
 	 * @return the normalized values
 	 */
-	public Collection<Integer> normalized() {
+	public List<Integer> normalized() {
 		return normalized;
 	}
 }
