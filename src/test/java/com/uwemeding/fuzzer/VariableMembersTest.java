@@ -3,6 +3,11 @@
  */
 package com.uwemeding.fuzzer;
 
+import com.uwemeding.fuzzer.eval.EvalFactory;
+import org.apache.commons.jexl2.Expression;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.JexlEngine;
+import org.apache.commons.jexl2.MapContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -117,6 +122,19 @@ public class VariableMembersTest {
 		v.calculateFuzzySpace();
 
 		dumpNormalized(nb, ns, z, ps, pb);
+
+		// apply hedge
+			JexlEngine engine = EvalFactory.getInstance();
+		Expression expr = engine.createExpression("x^2");
+
+		JexlContext context = new MapContext();
+		for(int i = 0;i<nb.normalized().size();i++) {
+			Number n = nb.normalized().get(i);
+			context.set("x", n.doubleValue()/255.);
+			Number nhedge = 255. * (Double)expr.evaluate(context);
+			System.out.println(i+" "+n+" -> "+nhedge.intValue());
+		}
+
 	}
 
 	private void dumpNormalized(Member... members) {

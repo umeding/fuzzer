@@ -28,6 +28,9 @@ public class Program {
 	private final Map<String, Variable> outputs;
 
 	public Program(String name) {
+		if (!IdentifierHelper.isValid(name)) {
+			throw new FuzzerException(name + ": identifier illegal");
+		}
 		this.name = name;
 		this.hedges = new HashMap<>();
 		this.functions = new HashMap<>();
