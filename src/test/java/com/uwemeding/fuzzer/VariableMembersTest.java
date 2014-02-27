@@ -124,15 +124,15 @@ public class VariableMembersTest {
 		dumpNormalized(nb, ns, z, ps, pb);
 
 		// apply hedge
-			JexlEngine engine = EvalFactory.getInstance();
+		JexlEngine engine = EvalFactory.getInstance();
 		Expression expr = engine.createExpression("x^2");
 
 		JexlContext context = new MapContext();
-		for(int i = 0;i<nb.normalized().size();i++) {
+		for (int i = 0; i < nb.normalized().size(); i++) {
 			Number n = nb.normalized().get(i);
-			context.set("x", n.doubleValue()/255.);
-			Number nhedge = 255. * (Double)expr.evaluate(context);
-			System.out.println(i+" "+n+" -> "+nhedge.intValue());
+			context.set("x", n.doubleValue() / 255.);
+			Number nhedge = 255. * (Double) expr.evaluate(context);
+			System.out.println(i + " " + n + " -> " + nhedge.intValue());
 		}
 
 	}
