@@ -10,12 +10,12 @@ import java.util.Properties;
  *
  * @author uwe
  */
-public class OutputContext {
+public class FuzzerOutputContext {
 
-	private final OutputStrategy strategy;
+	private final FuzzerOutput[] types;
 
-	public OutputContext(OutputStrategy strategy) {
-		this.strategy = strategy;
+	public FuzzerOutputContext(FuzzerOutput... types) {
+		this.types = types;
 	}
 
 	/**
@@ -25,6 +25,8 @@ public class OutputContext {
 	 * @param program the program
 	 */
 	public void create(Properties props, Program program) {
-		strategy.createOutput(props, program);
+		for (FuzzerOutput type : types) {
+			type.createOutput(props, program);
+		}
 	}
 }

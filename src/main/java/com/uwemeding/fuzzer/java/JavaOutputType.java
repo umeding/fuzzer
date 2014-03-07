@@ -4,7 +4,7 @@
 
 package com.uwemeding.fuzzer.java;
 
-import com.uwemeding.fuzzer.OutputStrategy;
+import com.uwemeding.fuzzer.FuzzerOutput;
 import com.uwemeding.fuzzer.Program;
 import java.util.Properties;
 
@@ -12,7 +12,7 @@ import java.util.Properties;
  * The JAVA output strategy.
  * @author uwe
  */
-public class JavaOutputStrategy implements OutputStrategy {
+public class JavaOutputType implements FuzzerOutput {
 
 	@Override
 	public void createOutput(Properties props, Program program) {
