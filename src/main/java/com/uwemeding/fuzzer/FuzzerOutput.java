@@ -13,6 +13,12 @@ import java.util.Properties;
 public interface FuzzerOutput {
 
 	/**
+	 * Get the rule condition evaluator
+	 * @return the rule condition evaluator
+	 */
+	ConditionEvaluator getConditionEvaluator();
+
+	/**
 	 * Create an output for a program.
 	 *
 	 * @param props the properties

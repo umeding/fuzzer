@@ -3,6 +3,7 @@
  */
 package com.uwemeding.fuzzer;
 
+import static com.uwemeding.fuzzer.Node.Type.MEMBER;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Objects;
  *
  * @author uwe
  */
-public class Member {
+public class Member implements NameBearer, Node {
 
 	private final String name;
 	private final List<Point> points;
@@ -41,8 +42,19 @@ public class Member {
 	 *
 	 * @return the member name
 	 */
+	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Get the node type.
+	 *
+	 * @return MEMBER
+	 */
+	@Override
+	public Type getNodeType() {
+		return MEMBER;
 	}
 
 	/**

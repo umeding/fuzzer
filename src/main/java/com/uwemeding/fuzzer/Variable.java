@@ -3,6 +3,7 @@
  */
 package com.uwemeding.fuzzer;
 
+import static com.uwemeding.fuzzer.Node.Type.VARIABLE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Objects;
  *
  * @author uwe
  */
-public class Variable implements NameBearer {
+public class Variable implements NameBearer, Node {
 
 	private final String name;
 	private final Class<? extends Number> type;
@@ -58,6 +59,15 @@ public class Variable implements NameBearer {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Get the node type.
+	 * @return variable node
+	 */
+	@Override
+	public Type getNodeType() {
+		return VARIABLE;
 	}
 
 	/**
