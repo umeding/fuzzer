@@ -39,6 +39,15 @@ public class Program {
 	}
 
 	/**
+	 * Get the program name.
+	 *
+	 * @return the program name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
 	 * Get the hedges.
 	 *
 	 * @return the hedges
