@@ -339,7 +339,7 @@ public class Java {
 		}
 
 		public Java.VAR addVAR(String modifier, String type, String name, String init) {
-			VAR v = new VAR(true, modifier, type, name, init);
+			VAR v = init == null ? new VAR(true, modifier, type, name) : new VAR(true, modifier, type, name, init);
 			add(v);
 			return (v);
 		}
@@ -1419,15 +1419,34 @@ public class Java {
 		 * @param	def	attribute default value
 		 *
 		 */
-		public void addProperty(String name, String type, String def) {
-			VAR var = addVAR("private", type, "_" + name, def);
+		/**
+		 * Adds getters and setters for a given property with the given data
+		 * type and default value;
+		 *
+		 * @param name attribute name
+		 * @param type attribute data type
+		 * @param def attribute default value
+		 * @param readOnly
+		 */
+		public void addProperty(String name, String type, String def, boolean readOnly) {
+			VAR var = addVAR("private", type, name, def);
 			String getMethod = makeGetter(name);
 			String setMethod = makeSetter(name);
 			METHOD getter = addMETHOD("public", type, getMethod);
-			getter.addS("return _" + name);
-			METHOD setter = addMETHOD("public", "void", setMethod);
-			setter.addArg(type, name);
-			setter.addS("_" + name + "=" + name);
+			getter.addS("return this." + name);
+			if (!readOnly) {
+				METHOD setter = addMETHOD("public", "void", setMethod);
+				setter.addArg(type, name);
+				setter.addS("this." + name + "=" + name);
+			}
+		}
+
+		public void addProperty(String name, String type, String def) {
+			addProperty(name, type, def, false);
+		}
+
+		public void addReadOnlyProperty(String name, String type, String def) {
+			addProperty(name, type, def, true);
 		}
 
 		public Java.METHOD addMETHOD(String modifier, String retType, String name) {

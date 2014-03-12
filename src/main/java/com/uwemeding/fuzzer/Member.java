@@ -239,7 +239,7 @@ public class Member implements NameBearer, Node {
 	 */
 	void normalizeY(double yMax, int normMax) {
 		for (double y : exploded) {
-			int norm = (int) ((y / yMax) * normMax);
+			int norm = (int) Math.round((y / yMax) * normMax);
 			normalized.add(norm);
 		}
 	}

@@ -27,6 +27,8 @@ public class Program {
 	private final Map<String, Variable> inputs;
 	private final Map<String, Variable> outputs;
 
+	private ReasoningStrategy reasoningStrategy;
+
 	public Program(String name) {
 		if (!IdentifierHelper.isValid(name)) {
 			throw new FuzzerException(name + ": identifier illegal");
@@ -36,6 +38,8 @@ public class Program {
 		this.functions = new HashMap<>();
 		this.inputs = new HashMap<>();
 		this.outputs = new HashMap<>();
+
+		this.reasoningStrategy = ReasoningStrategy.getDefault();
 	}
 
 	/**
@@ -45,6 +49,24 @@ public class Program {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Get the selected reasoning strategy.
+	 *
+	 * @return the selected reasoning strategy
+	 */
+	public ReasoningStrategy getReasoningStrategy() {
+		return reasoningStrategy;
+	}
+
+	/**
+	 * Set the reasoning strategy.
+	 *
+	 * @param reasoningStrategy the reasoning strategy
+	 */
+	public void setReasoningStrategy(ReasoningStrategy reasoningStrategy) {
+		this.reasoningStrategy = reasoningStrategy;
 	}
 
 	/**
