@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author uwe
  */
-public class Variable implements NameBearer, Node {
+public class Variable extends Node implements NameBearer {
 
 	private final String name;
 	private final Class<? extends Number> type;
@@ -39,7 +39,7 @@ public class Variable implements NameBearer, Node {
 
 		this.name = name;
 
-		this.type = from.getClass();
+		this.type = Number.class;
 		this.from = from;
 		this.to = to;
 		this.step = step;
@@ -63,6 +63,7 @@ public class Variable implements NameBearer, Node {
 
 	/**
 	 * Get the node type.
+	 *
 	 * @return variable node
 	 */
 	@Override

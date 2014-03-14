@@ -10,7 +10,7 @@ import static com.uwemeding.fuzzer.Node.Type.HEDGE;
  *
  * @author uwe
  */
-public class Hedge implements NameBearer, Node {
+public class Hedge extends Node implements NameBearer {
 
 	private final String name;
 	private String arg;

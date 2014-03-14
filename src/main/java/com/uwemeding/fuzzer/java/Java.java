@@ -40,7 +40,7 @@ public class Java {
 		DATE = DAY_FMT.format(new Date());
 
 		SimpleDateFormat YEAR_FMT = new SimpleDateFormat("yyyy");
-		YEAR = DAY_FMT.format(new Date());
+		YEAR = YEAR_FMT.format(new Date());
 
 		COPYRIGHT = "Copyright (c) " + YEAR + " Meding Software Technik -- All Rights Reserved.";
 
@@ -1428,7 +1428,7 @@ public class Java {
 		 * @param def attribute default value
 		 * @param readOnly
 		 */
-		public void addProperty(String name, String type, String def, boolean readOnly) {
+		public void addProperty(String type, String name, String def, boolean readOnly) {
 			VAR var = addVAR("private", type, name, def);
 			String getMethod = makeGetter(name);
 			String setMethod = makeSetter(name);
@@ -1441,11 +1441,25 @@ public class Java {
 			}
 		}
 
-		public void addProperty(String name, String type, String def) {
+		/**
+		 * Add a general property to the class.
+		 *
+		 * @param type the data type
+		 * @param name the property name
+		 * @param def the default value
+		 */
+		public void addProperty(String type, String name, String def) {
 			addProperty(name, type, def, false);
 		}
 
-		public void addReadOnlyProperty(String name, String type, String def) {
+		/**
+		 * Add a readonly property to the class.
+		 *
+		 * @param type the data type
+		 * @param name the property name
+		 * @param def the default value
+		 */
+		public void addReadOnlyProperty(String type, String name, String def) {
 			addProperty(name, type, def, true);
 		}
 

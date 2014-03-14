@@ -27,6 +27,8 @@ public class Program {
 	private final Map<String, Variable> inputs;
 	private final Map<String, Variable> outputs;
 
+	private final Map<String, Rule> rules;
+
 	private ReasoningStrategy reasoningStrategy;
 
 	public Program(String name) {
@@ -38,6 +40,7 @@ public class Program {
 		this.functions = new HashMap<>();
 		this.inputs = new HashMap<>();
 		this.outputs = new HashMap<>();
+		this.rules = new HashMap<>();
 
 		this.reasoningStrategy = ReasoningStrategy.getDefault();
 	}
@@ -67,6 +70,51 @@ public class Program {
 	 */
 	public void setReasoningStrategy(ReasoningStrategy reasoningStrategy) {
 		this.reasoningStrategy = reasoningStrategy;
+	}
+
+	/**
+	 * Add a rule to this program.
+	 *
+	 * @param name is the rule name
+	 * @param condition is the rule condition
+	 * @return the rule
+	 */
+	public Rule addRule(String name, Node condition) {
+		Rule rule = new Rule(name, condition);
+		rules.put(name, rule);
+		return rule;
+	}
+
+	/**
+	 * Get the rules.
+	 *
+	 * @return the rules
+	 */
+	public Collection<Rule> rules() {
+		return rules.values();
+	}
+
+	/**
+	 * The rule names.
+	 *
+	 * @return the rule names
+	 */
+	public Collection<String> ruleNames() {
+		return rules.keySet();
+	}
+
+	/**
+	 * Get a rule by name.
+	 *
+	 * @param name the rule name
+	 * @return the rule
+	 */
+	public Rule getRule(String name) {
+		Rule rule = rules.get(name);
+		if (rule == null) {
+			throw new FuzzerException(name + ": rule not found");
+		}
+		return rule;
 	}
 
 	/**
@@ -341,6 +389,12 @@ public class Program {
 		for (String name : names) {
 			Variable var = outputs.get(name);
 			dump(fp, var, "output");
+		}
+
+		names = new TreeSet<>(rules.keySet());
+		for (String name : names) {
+			Rule rule = rules.get(name);
+			fp.format(FMT, name, "<rule>", rule.toString());
 		}
 
 		// we are done

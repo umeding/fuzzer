@@ -4,10 +4,13 @@
 package com.uwemeding.fuzzer.java;
 
 import com.uwemeding.fuzzer.ConditionEvaluator;
+import com.uwemeding.fuzzer.Expression;
 import com.uwemeding.fuzzer.FuzzerException;
 import com.uwemeding.fuzzer.FuzzerOutput;
 import com.uwemeding.fuzzer.Member;
+import com.uwemeding.fuzzer.Node;
 import com.uwemeding.fuzzer.Program;
+import com.uwemeding.fuzzer.Rule;
 import com.uwemeding.fuzzer.Variable;
 import java.io.File;
 import java.io.IOException;
@@ -37,16 +40,21 @@ public class JavaOutputType implements FuzzerOutput {
 
 	private void createProgram(Program program) throws IOException {
 		Java.CLASS clazz = Java.createClass("public", program.getName());
-		clazz.setPackage("com.foo");
+		clazz.setPackage("com.uwemeding.fuzzer");
 
 		Java.METHOD ctor = clazz.addCTOR("public");
 		ctor.setComment("Construct a fuzzy object");
 
 		Java.METHOD method = clazz.addMETHOD("public", "void", "calculate");
 		method.setComment("Calculate new values");
+		for (Rule rule : program.rules()) {
+			String varName = addCondition(method, rule.getCondition());
+			method.addC(rule.getName() + ": " + varName);
+		}
 
 		addIntegerRoundingMethod(clazz);
 		addReasoningMethod(clazz, program);
+		addFindAssociation(clazz);
 
 		// inner class
 		Java.CLASS crispClass = clazz.addCLASS("public static", "CRISP");
@@ -63,8 +71,36 @@ public class JavaOutputType implements FuzzerOutput {
 				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
 			}
 		}
-		Java.setBaseDirectory(new File("./"));
+		Java.setBaseDirectory(new File("./src/test/java"));
 		Java.createSource(clazz);
+	}
+
+	private String addCondition(Java.METHOD method, Node node) {
+
+		String varName;
+		switch (node.getNodeType()) {
+			case IN:
+				Expression in = node.cast();
+				Variable var = in.getLeft().cast();
+				Member member = in.getRight().cast();
+				varName = var.getName() + "_in_" + member.getName();
+
+				method.addC(var.getName() + " in " + member.getName());
+				return varName;
+
+			case OR:
+			case AND:
+				Expression comb = node.cast();
+				String l = addCondition(method, comb.getLeft());
+				String r = addCondition(method, comb.getRight());
+				varName = l + "_" + node.getNodeType() + "_" + r;
+
+				method.addC(varName);
+				return varName;
+
+			default:
+				throw new FuzzerException(node.getNodeType() + ": unable to process");
+		}
 	}
 
 	/**
@@ -104,6 +140,34 @@ public class JavaOutputType implements FuzzerOutput {
 				throw new FuzzerException(program.getReasoningStrategy() + ": not implemented");
 
 		}
+	}
+
+	/**
+	 * Add the method to calculate the association of an input variable in a
+	 * fuzzy range.
+	 *
+	 * @param clazz the class wrapper
+	 */
+	private void addFindAssociation(Java.CLASS clazz) {
+		Java.METHOD assoc = clazz.addMETHOD("private", "Number", "findAssociation");
+		assoc.setComment("Determine the association of a value into a fuzzy range");
+		assoc.addArg("Number", "value", "value to check");
+		assoc.addArg("Number", "from", "fuzzy range start");
+		assoc.addArg("Number", "to", "fuzzy range end");
+		assoc.addArg("Number", "step", "fuzzy range step");
+		assoc.addArg("int[]", "frv", "fuzzy range values");
+		Java.IF vlimit = assoc.addIF("value.doubleValue() < from.doubleValue()");
+		vlimit.addS("value = from");
+		vlimit.addELSEIF("value.doubleValue() > to.doubleValue()")
+				.addS("value = to");
+
+		assoc.addS("int index = iround((value.doubleValue() - from.doubleValue()) / step.doubleValue())");
+
+		assoc.addIF("index > frv.length").addS("index = frv.length - 1");
+		assoc.addIF("index < 0").addS("index = 0");
+
+		assoc.addS("Number mapped = frv[index]");
+		assoc.addRETURN("mapped.doubleValue() / 255.0");
 	}
 
 	private String createNormalized(Member m) {

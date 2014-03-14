@@ -8,6 +8,7 @@ import static com.uwemeding.fuzzer.Node.Type.IN;
 import static com.uwemeding.fuzzer.Node.Type.OR;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 /**
@@ -17,13 +18,24 @@ import java.util.TreeMap;
  */
 public class Rule {
 
+	private final String name;
 	private final Node condition;
 	private final Map<Variable, Member> assignments;
 
-	public Rule(Node condition) {
+	public Rule(String name, Node condition) {
 		Conditions.checkNode(condition, IN, AND, OR);
+		this.name = name;
 		this.condition = condition;
 		this.assignments = new TreeMap<>();
+	}
+
+	/**
+	 * Get the rule name.
+	 *
+	 * @return the rule name
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -73,6 +85,33 @@ public class Rule {
 	 */
 	public Member getMember(Variable var) {
 		return assignments.get(var);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 17 * hash + Objects.hashCode(this.name);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Rule other = (Rule) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Rule{" + "name=" + name + '}';
 	}
 
 }

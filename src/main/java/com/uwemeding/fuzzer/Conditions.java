@@ -90,7 +90,7 @@ public class Conditions {
 		throw new FuzzerException(nodeName + ": invalid, must be one of " + sb.toString());
 	}
 
-	private static class Condition implements Node {
+	private static class Condition extends Expression {
 
 		private final Node.Type nodeType;
 		private final Node left;
@@ -107,10 +107,12 @@ public class Conditions {
 			return nodeType;
 		}
 
+		@Override
 		public Node getLeft() {
 			return left;
 		}
 
+		@Override
 		public Node getRight() {
 			return right;
 		}

@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author uwe
  */
-public class Member implements NameBearer, Node {
+public class Member extends Node implements NameBearer {
 
 	private final String name;
 	private final List<Point> points;

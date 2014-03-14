@@ -8,7 +8,7 @@ package com.uwemeding.fuzzer;
  *
  * @author uwe
  */
-public interface Node {
+public abstract class Node {
 
 	public static enum Type {
 
@@ -16,7 +16,6 @@ public interface Node {
 		VARIABLE,
 		MEMBER,
 		HEDGE,
-
 		// operations
 		HEDGING,
 		IN,
@@ -29,5 +28,14 @@ public interface Node {
 	 *
 	 * @return the node type
 	 */
-	Type getNodeType();
+	public abstract Type getNodeType();
+
+	/**
+	 * Cast this node to the desired type.
+	 * @param <T> the type
+	 * @return the casted node
+	 */
+	public <T extends Node> T cast() {
+		return (T)this;
+	}
 }

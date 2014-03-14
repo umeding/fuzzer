@@ -32,7 +32,7 @@ public class ProgramTest {
 
 	@Before
 	public void setUp() {
-		program = new Program("test");
+		program = new Program("Demo2");
 
 		program.addHedge("very", "x", "x^2");
 		program.addHedge("slightly", "x", "(x^1.2)&&(1.0-(x^2.0))");
@@ -102,6 +102,12 @@ public class ProgramTest {
 		Member v_ps = v.addMember("PS").add(0, 0).add(1, 1).add(2, 0);
 		Member v_pb = v.addMember("PB").add(1, 0).add(2, 1).add(5, 1);
 
+
+		Node tta_is_pb = Conditions.createInCondition(tta, tta_pb);
+		Node dth_is_z = Conditions.createInCondition(dth, dth_z);
+		Node and = Conditions.createAndCondition(tta_is_pb, dth_is_z);
+
+		Rule r1 = program.addRule("Rule01", and);
 
 	}
 
