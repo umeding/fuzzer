@@ -18,6 +18,8 @@ import java.util.TreeSet;
  */
 public class Program {
 
+	private final static Double EPSILON = 0.001;
+
 	private final String name;
 
 	private final Map<String, Hedge> hedges;
@@ -30,6 +32,7 @@ public class Program {
 	private final Map<String, Rule> rules;
 
 	private ReasoningStrategy reasoningStrategy;
+	private Number epsilon; // values less are considered 0
 
 	public Program(String name) {
 		if (!IdentifierHelper.isValid(name)) {
@@ -43,6 +46,7 @@ public class Program {
 		this.rules = new HashMap<>();
 
 		this.reasoningStrategy = ReasoningStrategy.getDefault();
+		this.epsilon = EPSILON;
 	}
 
 	/**
@@ -70,6 +74,24 @@ public class Program {
 	 */
 	public void setReasoningStrategy(ReasoningStrategy reasoningStrategy) {
 		this.reasoningStrategy = reasoningStrategy;
+	}
+
+	/**
+	 * Get epsilon.
+	 *
+	 * @return epsilon
+	 */
+	public Number getEpsilon() {
+		return epsilon;
+	}
+
+	/**
+	 * Set epsilon.
+	 *
+	 * @param epsilon epsilon
+	 */
+	public void setEpsilon(Number epsilon) {
+		this.epsilon = epsilon;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import com.uwemeding.fuzzer.FuzzerException;
 import com.uwemeding.fuzzer.FuzzerOutput;
 import com.uwemeding.fuzzer.Member;
 import com.uwemeding.fuzzer.Node;
+import static com.uwemeding.fuzzer.Node.Type.OR;
 import com.uwemeding.fuzzer.Program;
 import com.uwemeding.fuzzer.Rule;
 import com.uwemeding.fuzzer.Variable;
@@ -47,9 +48,28 @@ public class JavaOutputType implements FuzzerOutput {
 
 		Java.METHOD method = clazz.addMETHOD("public", "void", "calculate");
 		method.setComment("Calculate new values");
+		for (Variable v : program.inputs()) {
+			method.addArg("Number", v.getName(), v.toLogString());
+		}
+		
+		// add the output fuzzy sets
+		for(Variable v : program.outputs()) {
+			method.addS("int[] "+v.getName()+" = new int["+v.getTotalSteps()+"]");
+		}
+
+		// fire the rule if we have a meaningful result
 		for (Rule rule : program.rules()) {
+			method.addC(true, rule.getName());
 			String varName = addCondition(method, rule.getCondition());
-			method.addC(rule.getName() + ": " + varName);
+			for(Variable output : rule.assignmentVariables()) {
+				Member member = rule.getMember(output);
+
+				Java.IF fire = method.addIF("Math.abs("+varName+".doubleValue()) > "+program.getEpsilon());
+				fire.addC(true, "assign "+output.getName()+" to "+member.getName());
+				Java.FOR fout = fire.addFOR("int i = 0", "i<"+output.getTotalSteps(), "i++");
+				fout.addS(output.getName()+"[i] = 42");
+				
+			}
 		}
 
 		addIntegerRoundingMethod(clazz);
@@ -63,7 +83,17 @@ public class JavaOutputType implements FuzzerOutput {
 			crispClass.addReadOnlyProperty(v.getName(), v.getType().getName(), null);
 		}
 
+		clazz.addC(true, "======== INPUTS =========");
 		for (Variable v : program.inputs()) {
+			for (Member m : v.members()) {
+				String varName = v.getName() + "$" + m.getName();
+				String content = createNormalized(m);
+				Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
+				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
+			}
+		}
+		clazz.addC(true, "======== OUTPUTS =========");
+		for (Variable v : program.outputs()) {
 			for (Member m : v.members()) {
 				String varName = v.getName() + "$" + m.getName();
 				String content = createNormalized(m);
@@ -85,7 +115,8 @@ public class JavaOutputType implements FuzzerOutput {
 				Member member = in.getRight().cast();
 				varName = var.getName() + "_in_" + member.getName();
 
-				method.addC(var.getName() + " in " + member.getName());
+//				method.addC(var.getName() + " in " + member.getName());
+				callFindAssociation(method, varName, var, member);
 				return varName;
 
 			case OR:
@@ -95,7 +126,14 @@ public class JavaOutputType implements FuzzerOutput {
 				String r = addCondition(method, comb.getRight());
 				varName = l + "_" + node.getNodeType() + "_" + r;
 
-				method.addC(varName);
+				method.addC(true, node.getNodeType().toString());
+				String op;
+				if (node.getNodeType() == OR) {
+					op = "Math.max";
+				} else {
+					op = "Math.min";
+				}
+				method.addS("Number " + varName + " = " + op + "(" + l + ".doubleValue(), " + r + ".doubleValue())");
 				return varName;
 
 			default:
@@ -140,6 +178,17 @@ public class JavaOutputType implements FuzzerOutput {
 				throw new FuzzerException(program.getReasoningStrategy() + ": not implemented");
 
 		}
+	}
+
+	private void callFindAssociation(Java.METHOD method, String result, Variable variable, Member member) {
+
+		String setName = variable.getName() + "$" + member.getName();
+		method.addS("Number " + result + " = findAssociation("
+				+ variable.getName() + ", "
+				+ variable.getFrom() + ", "
+				+ variable.getTo() + ", "
+				+ variable.getStep() + ", "
+				+ setName + ")");
 	}
 
 	/**

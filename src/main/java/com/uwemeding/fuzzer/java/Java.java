@@ -108,6 +108,12 @@ public class Java {
 		}
 	}
 
+	private static void emitOneLineCommentIndentN(PrintWriter fp, String text, int indent) {
+		synchronized (lock) {
+			fp.println("// " + text);
+		}
+	}
+
 	/**
 	 * Description of the Method
 	 *
@@ -205,10 +211,10 @@ public class Java {
 	interface _Statement {
 
 		/**
-		 * Description of the Method
+		 * Write the statement to the output stream.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent the text indent
+		 * @param fp the output stream
 		 */
 		void emit(int indent, PrintWriter fp);
 	}
@@ -240,6 +246,11 @@ public class Java {
 		 */
 		public void addC(String s) {
 			Java.C stmt = new Java.C(s);
+			add(stmt);
+		}
+
+		public void addC(boolean oneLine, String s) {
+			Java.C stmt = new Java.C(oneLine, s);
 			add(stmt);
 		}
 
@@ -572,25 +583,41 @@ public class Java {
 	public static class C implements _Statement {
 
 		private String s;
+		private boolean oneLine;
 
 		/**
-		 * Constructor for the C object
+		 * Construct a comment.
 		 *
-		 * @param s Description of the Parameter
+		 * @param oneLine is this a one line comment?
+		 * @param s the comment text
 		 */
-		public C(String s) {
+		public C(boolean oneLine, String s) {
 			this.s = s.trim();
+			this.oneLine = oneLine;
 		}
 
 		/**
-		 * Description of the Method
+		 * Construct a multi-line comment.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param s the comment
+		 */
+		public C(String s) {
+			this(false, s);
+		}
+
+		/**
+		 * {@inheritDoc }
+		 *
+		 * @param indent the text indentation
+		 * @param fp the file handle
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
-			Java.emitCommentIndentN(fp, s, indent, false);
+			if (oneLine) {
+				Java.emitOneLineCommentIndentN(fp, s, indent);
+			} else {
+				Java.emitCommentIndentN(fp, s, indent, false);
+			}
 		}
 	}
 

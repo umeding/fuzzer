@@ -81,7 +81,7 @@ public class ProgramTest {
 
 		Member tta_pb = tta.addMember("PB");
 		tta_pb.add(20, 0).add(30, 1).add(50, 1);
-		
+
 		// Variable: dTheta
 		Variable dth = program.addInput("dTheta", -20, 20, 1);
 		Member dth_n = dth.addMember("N");
@@ -92,7 +92,7 @@ public class ProgramTest {
 
 		FunctionCall tri1 = new FunctionCall(triangle);
 		tri1.bindParameter(-10).bindParameter(0).bindParameter(10);
-		Member dth_p = dth.addMember("P",tri1);
+		Member dth_p = dth.addMember("P", tri1);
 
 		// Variable: veloc
 		Variable v = program.addOutput("veloc", -5, 5, 0.1);
@@ -102,13 +102,12 @@ public class ProgramTest {
 		Member v_ps = v.addMember("PS").add(0, 0).add(1, 1).add(2, 0);
 		Member v_pb = v.addMember("PB").add(1, 0).add(2, 1).add(5, 1);
 
-
 		Node tta_is_pb = Conditions.createInCondition(tta, tta_pb);
 		Node dth_is_z = Conditions.createInCondition(dth, dth_z);
 		Node and = Conditions.createAndCondition(tta_is_pb, dth_is_z);
 
 		Rule r1 = program.addRule("Rule01", and);
-
+		r1.assign(v, v_z);
 	}
 
 	@After

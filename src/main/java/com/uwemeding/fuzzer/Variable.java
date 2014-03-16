@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author uwe
  */
-public class Variable extends Node implements NameBearer {
+public class Variable extends Node implements NameBearer,Comparable {
 
 	private final String name;
 	private final Class<? extends Number> type;
@@ -22,6 +22,8 @@ public class Variable extends Node implements NameBearer {
 	private final Number to;
 	private final Number step;
 	private final List<Member> members;
+	private boolean calculated;
+	private int totalSteps;
 
 	public <T extends Number> Variable(String name, T from, T to, T step) {
 		if (name == null) {
@@ -45,6 +47,7 @@ public class Variable extends Node implements NameBearer {
 		this.step = step;
 
 		this.members = new ArrayList<>();
+		this.calculated = false;
 	}
 
 	public <T extends Number> Variable(String name, T from, T to) {
@@ -59,6 +62,18 @@ public class Variable extends Node implements NameBearer {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Get the member step count.
+	 *
+	 * @return the step count
+	 */
+	public int getTotalSteps() {
+		if (calculated) {
+			return totalSteps;
+		}
+		throw new FuzzerException("Must first calculate the fuzzy space");
 	}
 
 	/**
@@ -130,6 +145,12 @@ public class Variable extends Node implements NameBearer {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		Variable other = (Variable)o;
+		return this.getName().compareTo(other.getName());
 	}
 
 	/**
@@ -237,8 +258,10 @@ public class Variable extends Node implements NameBearer {
 		// normalize exploded values into a byte range
 		for (Member member : members()) {
 			member.normalizeY(yMax, 255);
+			totalSteps = Math.max(totalSteps, member.normalized().size());
 		}
 
+		this.calculated = true;
 	}
 
 }
