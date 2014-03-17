@@ -62,7 +62,7 @@ public class Conditions {
 	public static Node createOrCondition(Node left, Node right) {
 		checkNode(left, IN, AND, OR);
 		checkNode(right, IN, AND, OR);
-		return new Condition(Node.Type.IN, left, right);
+		return new Condition(Node.Type.OR, left, right);
 	}
 
 	/**

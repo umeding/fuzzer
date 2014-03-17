@@ -1460,10 +1460,13 @@ public class Java {
 			String getMethod = makeGetter(name);
 			String setMethod = makeSetter(name);
 			METHOD getter = addMETHOD("public", type, getMethod);
+			getter.setComment("Get "+name);
+					
 			getter.addS("return this." + name);
 			if (!readOnly) {
 				METHOD setter = addMETHOD("public", "void", setMethod);
-				setter.addArg(type, name);
+				setter.setComment("Set "+name);
+				setter.addArg(type, name, name);
 				setter.addS("this." + name + "=" + name);
 			}
 		}

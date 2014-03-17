@@ -104,10 +104,19 @@ public class ProgramTest {
 
 		Node tta_is_pb = Conditions.createInCondition(tta, tta_pb);
 		Node dth_is_z = Conditions.createInCondition(dth, dth_z);
-		Node and = Conditions.createAndCondition(tta_is_pb, dth_is_z);
+		Node and1 = Conditions.createAndCondition(tta_is_pb, dth_is_z);
 
-		Rule r1 = program.addRule("Rule01", and);
+		Node tta_is_ps = Conditions.createInCondition(tta, tta_ps);
+		Node dth_is_p = Conditions.createInCondition(dth, dth_p);
+		Node and2 = Conditions.createAndCondition(tta_is_ps, dth_is_p);
+
+		Node or = Conditions.createOrCondition(and1, and2);
+
+		Rule r1 = program.addRule("Rule01", or);
 		r1.assign(v, v_z);
+
+		Rule r2 = program.addRule("Rule02", or);
+		r2.assign(v, v_z);
 	}
 
 	@After

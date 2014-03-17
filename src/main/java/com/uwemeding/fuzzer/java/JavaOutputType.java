@@ -24,6 +24,12 @@ import java.util.Properties;
  */
 public class JavaOutputType implements FuzzerOutput {
 
+	private final NameMap nameMap;
+
+	public JavaOutputType() {
+		this.nameMap = new NameMap();
+	}
+
 	@Override
 	public ConditionEvaluator getConditionEvaluator() {
 		return new JavaConditionEvaluator();
@@ -33,6 +39,7 @@ public class JavaOutputType implements FuzzerOutput {
 	public void createOutput(Properties props, Program program) {
 		System.out.println("Create a java program");
 		try {
+			nameMap.clear();
 			createProgram(program);
 		} catch (IOException ex) {
 			throw new FuzzerException(ex);
@@ -46,42 +53,46 @@ public class JavaOutputType implements FuzzerOutput {
 		Java.METHOD ctor = clazz.addCTOR("public");
 		ctor.setComment("Construct a fuzzy object");
 
-		Java.METHOD method = clazz.addMETHOD("public", "void", "calculate");
+		Java.METHOD method = clazz.addMETHOD("public", "CRISP", "calculate");
 		method.setComment("Calculate new values");
 		for (Variable v : program.inputs()) {
 			method.addArg("Number", v.getName(), v.toLogString());
 		}
-		
+
+		method.addS("CRISP crisp = new CRISP()");
+
 		// add the output fuzzy sets
-		for(Variable v : program.outputs()) {
-			method.addS("int[] "+v.getName()+" = new int["+v.getTotalSteps()+"]");
+		for (Variable v : program.outputs()) {
+			method.addS("int[] " + v.getName() + " = new int[" + v.getTotalSteps() + "]");
 		}
 
 		// fire the rule if we have a meaningful result
 		for (Rule rule : program.rules()) {
 			method.addC(true, rule.getName());
-			String varName = addCondition(method, rule.getCondition());
-			for(Variable output : rule.assignmentVariables()) {
+			String varName = addCondition(method, rule, rule.getCondition());
+			for (Variable output : rule.assignmentVariables()) {
 				Member member = rule.getMember(output);
+				String frv = output.getName() + "$" + member.getName();
 
-				Java.IF fire = method.addIF("Math.abs("+varName+".doubleValue()) > "+program.getEpsilon());
-				fire.addC(true, "assign "+output.getName()+" to "+member.getName());
-				Java.FOR fout = fire.addFOR("int i = 0", "i<"+output.getTotalSteps(), "i++");
-				fout.addS(output.getName()+"[i] = 42");
-				
+				Java.IF fire = method.addIF("Math.abs(" + varName + ".doubleValue()) > " + program.getEpsilon());
+				fire.addC(true, "assign " + output.getName() + " to " + member.getName());
+				Java.FOR fout = fire.addFOR("int i = 0", "i<" + output.getTotalSteps(), "i++");
+				fout.addS("Number map = (double)" + frv + "[i] / 255.0");
+				fout.addS("map = rs(" + varName + ", map)");
+				fout.addS(output.getName() + "[i] = Math.max(" + output.getName() + "[i], map.intValue())");
+
 			}
 		}
+		method.addC(true, "Calculate the crisp values");
+		for (Variable v : program.outputs()) {
+			method.addS("crisp.calcCrisp_" + v.getName() + "(" + v.getName() + ")");
+		}
+		method.addRETURN("crisp");
 
 		addIntegerRoundingMethod(clazz);
 		addReasoningMethod(clazz, program);
 		addFindAssociation(clazz);
-
-		// inner class
-		Java.CLASS crispClass = clazz.addCLASS("public static", "CRISP");
-		Java.METHOD crispCtor = crispClass.addCTOR("private");
-		for (Variable v : program.outputs()) {
-			crispClass.addReadOnlyProperty(v.getName(), v.getType().getName(), null);
-		}
+		addCrispOutputs(clazz, program);
 
 		clazz.addC(true, "======== INPUTS =========");
 		for (Variable v : program.inputs()) {
@@ -105,7 +116,7 @@ public class JavaOutputType implements FuzzerOutput {
 		Java.createSource(clazz);
 	}
 
-	private String addCondition(Java.METHOD method, Node node) {
+	private String addCondition(Java.METHOD method, Rule rule, Node node) {
 
 		String varName;
 		switch (node.getNodeType()) {
@@ -113,7 +124,7 @@ public class JavaOutputType implements FuzzerOutput {
 				Expression in = node.cast();
 				Variable var = in.getLeft().cast();
 				Member member = in.getRight().cast();
-				varName = var.getName() + "_in_" + member.getName();
+				varName = nameMap.map(rule.getName() + "_" + var.getName() + "_in_" + member.getName());
 
 //				method.addC(var.getName() + " in " + member.getName());
 				callFindAssociation(method, varName, var, member);
@@ -122,11 +133,11 @@ public class JavaOutputType implements FuzzerOutput {
 			case OR:
 			case AND:
 				Expression comb = node.cast();
-				String l = addCondition(method, comb.getLeft());
-				String r = addCondition(method, comb.getRight());
-				varName = l + "_" + node.getNodeType() + "_" + r;
+				String l = addCondition(method, rule, comb.getLeft());
+				String r = addCondition(method, rule, comb.getRight());
+				varName = nameMap.map(rule.getName() + "_" + l + "_" + node.getNodeType() + "_" + r);
 
-				method.addC(true, node.getNodeType().toString());
+//				method.addC(true, node.getNodeType().toString());
 				String op;
 				if (node.getNodeType() == OR) {
 					op = "Math.max";
@@ -139,6 +150,35 @@ public class JavaOutputType implements FuzzerOutput {
 			default:
 				throw new FuzzerException(node.getNodeType() + ": unable to process");
 		}
+	}
+
+	private void addCrispOutputs(Java.CLASS clazz, Program program) {
+		// inner class
+		Java.CLASS crispClass = clazz.addCLASS("public static", "CRISP");
+		crispClass.setComment("Crisp output values");
+		Java.METHOD crispCtor = crispClass.addCTOR("private");
+		crispCtor.setComment("Create crisp output values");
+		for (Variable v : program.outputs()) {
+			crispClass.addReadOnlyProperty(v.getName(), v.getType().getName(), null);
+
+			String calc = "calcCrisp_" + v.getName();
+			Java.METHOD cc = crispClass.addMETHOD("private", "void", calc);
+			cc.setComment("Calculate the crisp " + v.getName() + " value");
+			cc.addArg("int[]", "fuzzy", "fuzzy output content");
+
+			cc.addS("double area = 0.0");
+			cc.addS("double moment = 0.0");
+
+			Java.FOR fout = cc.addFOR("int i = 0", "i < " + v.getTotalSteps(), "i++");
+			fout.addS("Number map = fuzzy[i]");
+			fout.addS("double normalized = " + v.getFrom() + " + (" + v.getStep() + " * i)");
+			fout.addS("area += map.doubleValue()");
+			fout.addS("moment += map.doubleValue() * normalized");
+			cc.addS(v.getName() + " = Math.abs(area) < " + program.getEpsilon() + " ? "
+					+ v.getTo() + " + " + v.getStep() + " : moment / area");
+
+		}
+
 	}
 
 	/**
