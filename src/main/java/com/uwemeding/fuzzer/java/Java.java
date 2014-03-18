@@ -90,12 +90,12 @@ public class Java {
 	}
 
 	/**
-	 * Description of the Method
+	 * Write a comment at some indentation level.
 	 *
-	 * @param fp Description of the Parameter
-	 * @param text Description of the Parameter
-	 * @param indent Description of the Parameter
-	 * @param type Description of the Parameter
+	 * @param fp
+	 * @param text
+	 * @param indent
+	 * @param type
 	 */
 	private static void emitCommentIndentN(PrintWriter fp, String text, int indent, boolean type) {
 		synchronized (lock) {
@@ -115,10 +115,10 @@ public class Java {
 	}
 
 	/**
-	 * Description of the Method
+	 * Finish a comment.
 	 *
-	 * @param fp Description of the Parameter
-	 * @param indent Description of the Parameter
+	 * @param fp
+	 * @param indent
 	 */
 	private static void emitFinishCommentIndentN(PrintWriter fp, int indent) {
 		final String spaces = "                                                                   ";
@@ -129,12 +129,12 @@ public class Java {
 	}
 
 	/**
-	 * Description of the Method
+	 * Write a comment indent only.
 	 *
-	 * @param fp Description of the Parameter
-	 * @param text Description of the Parameter
-	 * @param indent Description of the Parameter
-	 * @return Description of the Return Value
+	 * @param fp
+	 * @param text 
+	 * @param indent 
+	 * @return 
 	 */
 	private static String emitCommentIndentNOnly(PrintWriter fp, String text, int indent) {
 		synchronized (lock) {
@@ -255,10 +255,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write the indent.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		public void emitIndent(int indent, PrintWriter fp) {
 			final String spaces = "                                                               ";
@@ -266,10 +266,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write the indent.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@SuppressWarnings("empty-statement")
 		public void emit(int indent, PrintWriter fp) {
@@ -383,6 +383,10 @@ public class Java {
 			add(stmt);
 		}
 
+		public void addLine() {
+			addLine("");
+		}
+
 		public void addLine(String s) {
 			Java.Line stmt = new Java.Line(s);
 			add(stmt);
@@ -404,7 +408,7 @@ public class Java {
 		 * @param start The feature to be added to the FOR attribute
 		 * @param condition The feature to be added to the FOR attribute
 		 * @param iter The feature to be added to the FOR attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.FOR addFOR(String start, String condition, String iter) {
 			Java.FOR f = new Java.FOR(start, condition, iter);
@@ -416,7 +420,7 @@ public class Java {
 		 * Adds a feature to the IF attribute of the _StatementBlock object
 		 *
 		 * @param cond The feature to be added to the IF attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.IF addIF(String cond) {
 			Java.IF i = new Java.IF(this, cond);
@@ -428,7 +432,7 @@ public class Java {
 		 * Adds a feature to the WHILE attribute of the _StatementBlock object
 		 *
 		 * @param cond The feature to be added to the WHILE attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.WHILE addWHILE(String cond) {
 			Java.WHILE w = new Java.WHILE(cond);
@@ -440,7 +444,7 @@ public class Java {
 		 * Adds a feature to the SWITCH attribute of the _StatementBlock object
 		 *
 		 * @param cond The feature to be added to the SWITCH attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.SWITCH addSWITCH(String cond) {
 			Java.SWITCH w = new Java.SWITCH(cond);
@@ -452,7 +456,7 @@ public class Java {
 		 * Adds a feature to the DOWHILE attribute of the _StatementBlock object
 		 *
 		 * @param cond The feature to be added to the DOWHILE attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.DOWHILE addDOWHILE(String cond) {
 			Java.DOWHILE w = new Java.DOWHILE(cond);
@@ -478,7 +482,7 @@ public class Java {
 		/**
 		 * Constructor for the S object
 		 *
-		 * @param s Description of the Parameter
+		 * @param s 
 		 */
 		public S(String s) {
 			if (s != null) {
@@ -487,10 +491,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a statement.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -512,17 +516,17 @@ public class Java {
 		/**
 		 * Constructor for the S object
 		 *
-		 * @param s Description of the Parameter
+		 * @param s 
 		 */
 		public Line(String s) {
 			this.s = s;
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a line.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -541,17 +545,17 @@ public class Java {
 		/**
 		 * Constructor for the S object
 		 *
-		 * @param s Description of the Parameter
+		 * @param s 
 		 */
 		public LABEL(String s) {
 			this.s = s.trim();
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a label.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -633,9 +637,9 @@ public class Java {
 		/**
 		 * Constructor for the FOR object
 		 *
-		 * @param start Description of the Parameter
-		 * @param condition Description of the Parameter
-		 * @param iter Description of the Parameter
+		 * @param start 
+		 * @param condition 
+		 * @param iter 
 		 */
 		public FOR(String start, String condition, String iter) {
 			this.start = start == null ? "" : start.trim();
@@ -644,10 +648,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a FOR statement.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -668,7 +672,7 @@ public class Java {
 		 * Constructor for the IF object
 		 *
 		 * @param parent
-		 * @param condition Description of the Parameter
+		 * @param condition 
 		 */
 		public IF(_StatementBlock parent, String condition) {
 			this.parent = parent;
@@ -691,10 +695,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write an IF statement
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -749,7 +753,7 @@ public class Java {
 		/**
 		 * Constructor for the WHILE object
 		 *
-		 * @param condition Description of the Parameter
+		 * @param condition 
 		 */
 		public WHILE(String condition) {
 			if (condition == null) {
@@ -759,10 +763,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a WHILE statement.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -781,7 +785,7 @@ public class Java {
 		/**
 		 * Constructor for the SWITCH object
 		 *
-		 * @param condition Description of the Parameter
+		 * @param condition 
 		 */
 		public SWITCH(String condition) {
 			if (condition == null) {
@@ -794,7 +798,7 @@ public class Java {
 		 * Adds a feature to the CASE attribute of the SWITCH object
 		 *
 		 * @param cond The feature to be added to the CASE attribute
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.CASE addCASE(String cond) {
 			return (addCASE(false, cond));
@@ -814,7 +818,7 @@ public class Java {
 		/**
 		 * Adds a feature to the DEFAULT attribute of the SWITCH object
 		 *
-		 * @return Description of the Return Value
+		 * @return 
 		 */
 		public Java.CASE addDEFAULT() {
 			return (addDEFAULT(false));
@@ -827,10 +831,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a CASE statement.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -865,7 +869,7 @@ public class Java {
 		/**
 		 * Constructor for the CASE object
 		 *
-		 * @param condition Description of the Parameter
+		 * @param condition 
 		 */
 		public CASE(String condition) {
 			if (condition == null) {
@@ -893,10 +897,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a CASE statement
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -928,7 +932,7 @@ public class Java {
 		/**
 		 * Constructor for the DOWHILE object
 		 *
-		 * @param condition Description of the Parameter
+		 * @param condition 
 		 */
 		public DOWHILE(String condition) {
 			if (condition == null) {
@@ -938,10 +942,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a DO/WHILE statement.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		public void emit(int indent, PrintWriter fp) {
@@ -1084,8 +1088,8 @@ public class Java {
 		 * Constructor for the Method object
 		 *
 		 * @param modifier
-		 * @param retType Description of the Parameter
-		 * @param methodName Description of the Parameter
+		 * @param retType 
+		 * @param methodName 
 		 */
 		public METHOD(String modifier, String retType, String methodName) {
 			if (modifier == null) {
@@ -1171,10 +1175,10 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a method.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		@Override
 		@SuppressWarnings("empty-statement")
@@ -1264,7 +1268,7 @@ public class Java {
 		/**
 		 * Constructor for the Arg object
 		 *
-		 * @param name Description of the Parameter
+		 * @param name 
 		 */
 		public Throw(String name) {
 			if (name == null) {
@@ -1276,8 +1280,8 @@ public class Java {
 		/**
 		 * Constructor for the Arg object
 		 *
-		 * @param name Description of the Parameter
-		 * @param comment Description of the Parameter
+		 * @param name 
+		 * @param comment 
 		 */
 		public Throw(String name, String comment) {
 			this(name);
@@ -1285,19 +1289,19 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a THROW.
 		 *
-		 * @param fp Description of the Parameter
+		 * @param fp 
 		 */
 		public void emit(PrintWriter fp) {
 			fp.print(name);
 		}
 
 		/**
-		 * Description of the Method
+		 * Write a comment.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		public void emitComment(int indent, PrintWriter fp) {
 			if (comment == null) {
@@ -1316,8 +1320,8 @@ public class Java {
 		/**
 		 * Constructor for the Arg object
 		 *
-		 * @param type Description of the Parameter
-		 * @param name Description of the Parameter
+		 * @param type 
+		 * @param name 
 		 */
 		public Arg(String type, String name) {
 			if (type == null) {
@@ -1333,9 +1337,9 @@ public class Java {
 		/**
 		 * Constructor for the Arg object
 		 *
-		 * @param type Description of the Parameter
-		 * @param name Description of the Parameter
-		 * @param comment Description of the Parameter
+		 * @param type 
+		 * @param name 
+		 * @param comment 
 		 */
 		public Arg(String type, String name, String comment) {
 			this(type, name);
@@ -1343,19 +1347,19 @@ public class Java {
 		}
 
 		/**
-		 * Description of the Method
+		 * Write an argument.
 		 *
-		 * @param fp Description of the Parameter
+		 * @param fp 
 		 */
 		public void emit(PrintWriter fp) {
 			fp.print(type + " " + name);
 		}
 
 		/**
-		 * Description of the Method
+		 * Write an arg comment.
 		 *
-		 * @param indent Description of the Parameter
-		 * @param fp Description of the Parameter
+		 * @param indent 
+		 * @param fp 
 		 */
 		public void emitComment(int indent, PrintWriter fp) {
 			if (comment == null) {
@@ -1460,12 +1464,12 @@ public class Java {
 			String getMethod = makeGetter(name);
 			String setMethod = makeSetter(name);
 			METHOD getter = addMETHOD("public", type, getMethod);
-			getter.setComment("Get "+name);
-					
+			getter.setComment("Get " + name);
+
 			getter.addS("return this." + name);
 			if (!readOnly) {
 				METHOD setter = addMETHOD("public", "void", setMethod);
-				setter.setComment("Set "+name);
+				setter.setComment("Set " + name);
 				setter.addArg(type, name, name);
 				setter.addS("this." + name + "=" + name);
 			}

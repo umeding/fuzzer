@@ -59,8 +59,6 @@ public class JavaOutputType implements FuzzerOutput {
 			method.addArg("Number", v.getName(), v.toLogString());
 		}
 
-		method.addS("CRISP crisp = new CRISP()");
-
 		// add the output fuzzy sets
 		for (Variable v : program.outputs()) {
 			method.addS("int[] " + v.getName() + " = new int[" + v.getTotalSteps() + "]");
@@ -83,15 +81,27 @@ public class JavaOutputType implements FuzzerOutput {
 
 			}
 		}
+
+		method.addLine();
 		method.addC(true, "Calculate the crisp values");
+		method.addLine("CRISP crisp = new CRISP(");
+		StringBuilder sb = new StringBuilder();
+		int noutputs = program.outputs().size();
 		for (Variable v : program.outputs()) {
-			method.addS("crisp.calcCrisp_" + v.getName() + "(" + v.getName() + ")");
+			String delim = --noutputs > 0 ? "," : "";
+			method.addLine("    calculateCrispValue("
+					+ v.getFrom() + ", "
+					+ v.getTo() + ", "
+					+ v.getStep() + ", "
+					+ v.getName() + ")" + delim);
 		}
+		method.addLine(");");
 		method.addRETURN("crisp");
 
 		addIntegerRoundingMethod(clazz);
 		addReasoningMethod(clazz, program);
 		addFindAssociation(clazz);
+		addCalculateCrispValue(program, clazz);
 		addCrispOutputs(clazz, program);
 
 		clazz.addC(true, "======== INPUTS =========");
@@ -156,29 +166,33 @@ public class JavaOutputType implements FuzzerOutput {
 		// inner class
 		Java.CLASS crispClass = clazz.addCLASS("public static", "CRISP");
 		crispClass.setComment("Crisp output values");
+		for (Variable v : program.outputs()) {
+			crispClass.addVAR("private final", "Number", v.getName());
+		}
+
 		Java.METHOD crispCtor = crispClass.addCTOR("private");
 		crispCtor.setComment("Create crisp output values");
 		for (Variable v : program.outputs()) {
-			crispClass.addReadOnlyProperty(v.getName(), v.getType().getName(), null);
-
-			String calc = "calcCrisp_" + v.getName();
-			Java.METHOD cc = crispClass.addMETHOD("private", "void", calc);
-			cc.setComment("Calculate the crisp " + v.getName() + " value");
-			cc.addArg("int[]", "fuzzy", "fuzzy output content");
-
-			cc.addS("double area = 0.0");
-			cc.addS("double moment = 0.0");
-
-			Java.FOR fout = cc.addFOR("int i = 0", "i < " + v.getTotalSteps(), "i++");
-			fout.addS("Number map = fuzzy[i]");
-			fout.addS("double normalized = " + v.getFrom() + " + (" + v.getStep() + " * i)");
-			fout.addS("area += map.doubleValue()");
-			fout.addS("moment += map.doubleValue() * normalized");
-			cc.addS(v.getName() + " = Math.abs(area) < " + program.getEpsilon() + " ? "
-					+ v.getTo() + " + " + v.getStep() + " : moment / area");
-
+			crispCtor.addArg("Number", v.getName(), v.getName() + " crisp value");
+			crispCtor.addS("this." + v.getName() + " = " + v.getName());
 		}
 
+		// accessors
+		for (Variable v : program.outputs()) {
+			String getterName = makeGetter(v.getName());
+			Java.METHOD getter = crispClass.addMETHOD("public", "Number", getterName);
+			getter.setComment("Get the " + v.getName() + " crisp value");
+			getter.setReturnComment("the "+v.getName()+" crisp value");
+			getter.addRETURN(v.getName());
+		}
+	}
+
+	private String makeGetter(String attr) {
+		StringBuilder sb = new StringBuilder((attr.length() + 3));
+		sb.append("get");
+		sb.append(attr.substring(0, 1).toUpperCase());
+		sb.append(attr.substring(1));
+		return sb.toString();
 	}
 
 	/**
@@ -190,6 +204,7 @@ public class JavaOutputType implements FuzzerOutput {
 		// round method
 		Java.METHOD iround = clazz.addMETHOD("private", "int", "iround");
 		iround.setComment("Round to the nearest integer");
+		iround.setReturnComment("the nearest integer");
 		iround.addArg("Number", "value", "value to be rounded");
 		iround.addRETURN("(int)Math.round(value.doubleValue())");
 	}
@@ -205,6 +220,7 @@ public class JavaOutputType implements FuzzerOutput {
 		// reasoning strategy
 		Java.METHOD rs = clazz.addMETHOD("private", "Number", "rs");
 		rs.setComment("Reasoning strategy is " + program.getReasoningStrategy().getName());
+		rs.setReturnComment("the reasoned value");
 		rs.addArg("Number", "a", "strength value");
 		rs.addArg("Number", "b", "mapped value");
 		switch (program.getReasoningStrategy()) {
@@ -216,10 +232,46 @@ public class JavaOutputType implements FuzzerOutput {
 				break;
 			default:
 				throw new FuzzerException(program.getReasoningStrategy() + ": not implemented");
-
 		}
 	}
 
+	/**
+	 * Calculate the crisp output value.
+	 *
+	 * @param method the calling method
+	 * @param variable the output variable
+	 */
+	private void addCalculateCrispValue(Program program, Java.CLASS clazz) {
+
+		Java.METHOD calc = clazz.addMETHOD("private", "Number", "calculateCrispValue");
+		calc.setComment("Calculate the crisp value");
+		calc.setReturnComment("the crisp value");
+		calc.addArg("Number", "from", "Start interval");
+		calc.addArg("Number", "to", "End interval");
+		calc.addArg("Number", "step", "Interval step");
+		calc.addArg("int[]", "fuzzy", "Fuzzy value");
+
+		calc.addS("double area = 0.0");
+		calc.addS("double moment = 0.0");
+
+		Java.FOR fout = calc.addFOR("int i = 0", "i < fuzzy.length", "i++");
+		fout.addS("Number map = fuzzy[i]");
+		fout.addS("double normalized = from.doubleValue() + (step.doubleValue() * i)");
+		fout.addS("area += map.doubleValue()");
+		fout.addS("moment += map.doubleValue() * normalized");
+		calc.addRETURN("Math.abs(area) < " + program.getEpsilon() + " ? "
+				+ "to.doubleValue() + step.doubleValue() : moment / area");
+
+	}
+
+	/**
+	 * Call the find association method.
+	 *
+	 * @param method the invoking method
+	 * @param result the result variable
+	 * @param variable the input variable
+	 * @param member the member
+	 */
 	private void callFindAssociation(Java.METHOD method, String result, Variable variable, Member member) {
 
 		String setName = variable.getName() + "$" + member.getName();
@@ -240,6 +292,7 @@ public class JavaOutputType implements FuzzerOutput {
 	private void addFindAssociation(Java.CLASS clazz) {
 		Java.METHOD assoc = clazz.addMETHOD("private", "Number", "findAssociation");
 		assoc.setComment("Determine the association of a value into a fuzzy range");
+		assoc.setReturnComment("the association");
 		assoc.addArg("Number", "value", "value to check");
 		assoc.addArg("Number", "from", "fuzzy range start");
 		assoc.addArg("Number", "to", "fuzzy range end");
