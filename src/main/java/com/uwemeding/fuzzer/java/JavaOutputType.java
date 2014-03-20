@@ -61,7 +61,7 @@ public class JavaOutputType implements FuzzerOutput {
 
 		// add the output fuzzy sets
 		for (Variable v : program.outputs()) {
-			method.addS("int[] " + v.getName() + " = new int[" + v.getTotalSteps() + "]");
+			method.addS("double[] " + v.getName() + " = new double[" + v.getTotalSteps() + "]");
 		}
 
 		// fire the rule if we have a meaningful result
@@ -77,7 +77,7 @@ public class JavaOutputType implements FuzzerOutput {
 				Java.FOR fout = fire.addFOR("int i = 0", "i<" + output.getTotalSteps(), "i++");
 				fout.addS("Number map = (double)" + frv + "[i] / 255.0");
 				fout.addS("map = rs(" + varName + ", map)");
-				fout.addS(output.getName() + "[i] = Math.max(" + output.getName() + "[i], map.intValue())");
+				fout.addS(output.getName() + "[i] = Math.max(" + output.getName() + "[i], map.doubleValue())");
 
 			}
 		}
@@ -249,18 +249,18 @@ public class JavaOutputType implements FuzzerOutput {
 		calc.addArg("Number", "from", "Start interval");
 		calc.addArg("Number", "to", "End interval");
 		calc.addArg("Number", "step", "Interval step");
-		calc.addArg("int[]", "fuzzy", "Fuzzy value");
+		calc.addArg("double[]", "fuzzy", "Fuzzy value");
 
 		calc.addS("double area = 0.0");
 		calc.addS("double moment = 0.0");
 
 		Java.FOR fout = calc.addFOR("int i = 0", "i < fuzzy.length", "i++");
-		fout.addS("Number map = fuzzy[i]");
 		fout.addS("double normalized = from.doubleValue() + (step.doubleValue() * i)");
-		fout.addS("area += map.doubleValue()");
-		fout.addS("moment += map.doubleValue() * normalized");
-		calc.addRETURN("Math.abs(area) < " + program.getEpsilon() + " ? "
+		fout.addS("area += fuzzy[i]");
+		fout.addS("moment += fuzzy[i] * normalized");
+		calc.addS("double crisp = Math.abs(area) < " + program.getEpsilon() + " ? "
 				+ "to.doubleValue() + step.doubleValue() : moment / area");
+		calc.addRETURN("Math.abs(crisp) > "+program.getEpsilon()+ " ? crisp : 0.0");
 
 	}
 
