@@ -23,12 +23,8 @@ public class ProgramEvaluator {
 	 * Compile the program
 	 */
 	private void compileProgram() {
-		for (Variable var : program.inputs()) {
-			var.calculateFuzzySpace();
-		}
-		for (Variable var : program.outputs()) {
-			var.calculateFuzzySpace();
-		}
+		program.inputs().forEach(var -> var.calculateFuzzySpace());
+		program.outputs().forEach(var -> var.calculateFuzzySpace());
 	}
 
 }

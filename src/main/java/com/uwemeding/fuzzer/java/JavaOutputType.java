@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer.java;
 
-import com.uwemeding.fuzzer.ConditionEvaluator;
 import com.uwemeding.fuzzer.Expression;
 import com.uwemeding.fuzzer.FuzzerException;
 import com.uwemeding.fuzzer.FuzzerOutput;
@@ -15,11 +14,12 @@ import com.uwemeding.fuzzer.Rule;
 import com.uwemeding.fuzzer.Variable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Properties;
 
 /**
  * The JAVA output strategy.
- *
+ * <p>
  * @author uwe
  */
 public class JavaOutputType implements FuzzerOutput {
@@ -28,11 +28,6 @@ public class JavaOutputType implements FuzzerOutput {
 
 	public JavaOutputType() {
 		this.nameMap = new NameMap();
-	}
-
-	@Override
-	public ConditionEvaluator getConditionEvaluator() {
-		return new JavaConditionEvaluator();
 	}
 
 	@Override
@@ -55,20 +50,17 @@ public class JavaOutputType implements FuzzerOutput {
 
 		Java.METHOD method = clazz.addMETHOD("public", "CRISP", "calculate");
 		method.setComment("Calculate new values");
-		for (Variable v : program.inputs()) {
-			method.addArg("Number", v.getName(), v.toLogString());
-		}
+		program.inputs().forEach(v -> method.addArg("Number", v.getName(), v.toLogString()));
 
 		// add the output fuzzy sets
-		for (Variable v : program.outputs()) {
-			method.addS("double[] " + v.getName() + " = new double[" + v.getTotalSteps() + "]");
-		}
+		program.outputs().forEach(v -> method.addS("double[] " + v.getName() + " = new double[" + v.getTotalSteps() + "]"));
 
 		// fire the rule if we have a meaningful result
-		for (Rule rule : program.rules()) {
+		program.rules().forEach(rule -> {
 			method.addC(true, rule.getName());
 			String varName = addCondition(method, rule, rule.getCondition());
-			for (Variable output : rule.assignmentVariables()) {
+
+			rule.assignmentVariables().forEach(output -> {
 				Member member = rule.getMember(output);
 				String frv = output.getName() + "$" + member.getName();
 
@@ -78,9 +70,8 @@ public class JavaOutputType implements FuzzerOutput {
 				fout.addS("Number map = (double)" + frv + "[i] / 255.0");
 				fout.addS("map = rs(" + varName + ", map)");
 				fout.addS(output.getName() + "[i] = Math.max(" + output.getName() + "[i], map.doubleValue())");
-
-			}
-		}
+			});
+		});
 
 		method.addLine();
 		method.addC(true, "Calculate the crisp values");
@@ -105,23 +96,23 @@ public class JavaOutputType implements FuzzerOutput {
 		addCrispOutputs(clazz, program);
 
 		clazz.addC(true, "======== INPUTS =========");
-		for (Variable v : program.inputs()) {
-			for (Member m : v.members()) {
+		program.inputs().forEach(v -> {
+			v.members().forEach(m -> {
 				String varName = v.getName() + "$" + m.getName();
 				String content = createNormalized(m);
 				Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
 				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
-			}
-		}
+			});
+		});
 		clazz.addC(true, "======== OUTPUTS =========");
-		for (Variable v : program.outputs()) {
-			for (Member m : v.members()) {
+		program.outputs().forEach(v -> {
+			v.members().forEach(m -> {
 				String varName = v.getName() + "$" + m.getName();
 				String content = createNormalized(m);
 				Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
 				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
-			}
-		}
+			});
+		});
 		Java.setBaseDirectory(new File("./src/test/java"));
 		Java.createSource(clazz);
 	}
@@ -166,25 +157,23 @@ public class JavaOutputType implements FuzzerOutput {
 		// inner class
 		Java.CLASS crispClass = clazz.addCLASS("public static", "CRISP");
 		crispClass.setComment("Crisp output values");
-		for (Variable v : program.outputs()) {
-			crispClass.addVAR("private final", "Number", v.getName());
-		}
+		program.outputs().forEach(v -> crispClass.addVAR("private final", "Number", v.getName()));
 
 		Java.METHOD crispCtor = crispClass.addCTOR("private");
 		crispCtor.setComment("Create crisp output values");
-		for (Variable v : program.outputs()) {
+		program.outputs().forEach(v -> {
 			crispCtor.addArg("Number", v.getName(), v.getName() + " crisp value");
 			crispCtor.addS("this." + v.getName() + " = " + v.getName());
-		}
+		});
 
 		// accessors
-		for (Variable v : program.outputs()) {
+		program.outputs().forEach(v -> {
 			String getterName = makeGetter(v.getName());
 			Java.METHOD getter = crispClass.addMETHOD("public", "Number", getterName);
 			getter.setComment("Get the " + v.getName() + " crisp value");
-			getter.setReturnComment("the "+v.getName()+" crisp value");
+			getter.setReturnComment("the " + v.getName() + " crisp value");
 			getter.addRETURN(v.getName());
-		}
+		});
 	}
 
 	private String makeGetter(String attr) {
@@ -197,7 +186,7 @@ public class JavaOutputType implements FuzzerOutput {
 
 	/**
 	 * Add the integer rounding method to the generated code.
-	 *
+	 * <p>
 	 * @param clazz the class wrapper
 	 */
 	private void addIntegerRoundingMethod(Java.CLASS clazz) {
@@ -211,8 +200,8 @@ public class JavaOutputType implements FuzzerOutput {
 
 	/**
 	 * Add the reasoning method to the generated code.
-	 *
-	 * @param clazz the class wrapper
+	 * <p>
+	 * @param clazz   the class wrapper
 	 * @param program the fuzzy program
 	 * @throws FuzzerException
 	 */
@@ -237,8 +226,8 @@ public class JavaOutputType implements FuzzerOutput {
 
 	/**
 	 * Calculate the crisp output value.
-	 *
-	 * @param method the calling method
+	 * <p>
+	 * @param method   the calling method
 	 * @param variable the output variable
 	 */
 	private void addCalculateCrispValue(Program program, Java.CLASS clazz) {
@@ -260,17 +249,17 @@ public class JavaOutputType implements FuzzerOutput {
 		fout.addS("moment += fuzzy[i] * normalized");
 		calc.addS("double crisp = Math.abs(area) < " + program.getEpsilon() + " ? "
 				+ "to.doubleValue() + step.doubleValue() : moment / area");
-		calc.addRETURN("Math.abs(crisp) > "+program.getEpsilon()+ " ? crisp : 0.0");
+		calc.addRETURN("Math.abs(crisp) > " + program.getEpsilon() + " ? crisp : 0.0");
 
 	}
 
 	/**
 	 * Call the find association method.
-	 *
-	 * @param method the invoking method
-	 * @param result the result variable
+	 * <p>
+	 * @param method   the invoking method
+	 * @param result   the result variable
 	 * @param variable the input variable
-	 * @param member the member
+	 * @param member   the member
 	 */
 	private void callFindAssociation(Java.METHOD method, String result, Variable variable, Member member) {
 
@@ -286,7 +275,7 @@ public class JavaOutputType implements FuzzerOutput {
 	/**
 	 * Add the method to calculate the association of an input variable in a
 	 * fuzzy range.
-	 *
+	 * <p>
 	 * @param clazz the class wrapper
 	 */
 	private void addFindAssociation(Java.CLASS clazz) {

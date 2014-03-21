@@ -10,13 +10,8 @@ import java.util.Properties;
  *
  * @author uwe
  */
+@FunctionalInterface
 public interface FuzzerOutput {
-
-	/**
-	 * Get the rule condition evaluator
-	 * @return the rule condition evaluator
-	 */
-	ConditionEvaluator getConditionEvaluator();
 
 	/**
 	 * Create an output for a program.

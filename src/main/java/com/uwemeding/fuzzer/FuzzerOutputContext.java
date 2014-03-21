@@ -3,6 +3,8 @@
  */
 package com.uwemeding.fuzzer;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -12,10 +14,10 @@ import java.util.Properties;
  */
 public class FuzzerOutputContext {
 
-	private final FuzzerOutput[] types;
+	private final List<FuzzerOutput> types;
 
 	public FuzzerOutputContext(FuzzerOutput... types) {
-		this.types = types;
+		this.types = Arrays.asList(types);
 	}
 
 	/**
@@ -25,8 +27,6 @@ public class FuzzerOutputContext {
 	 * @param program the program
 	 */
 	public void create(Properties props, Program program) {
-		for (FuzzerOutput type : types) {
-			type.createOutput(props, program);
-		}
+		types.stream().forEach((type) -> type.createOutput(props, program));
 	}
 }

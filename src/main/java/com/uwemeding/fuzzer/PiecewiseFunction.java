@@ -41,9 +41,9 @@ public class PiecewiseFunction extends Function {
 
 		// set all the parameters
 		JexlContext context = new MapContext();
-		for (String parameterName : call.parameterNames()) {
-			context.set(parameterName, call.getParameter(parameterName).doubleValue());
-		}
+		call.parameterNames().forEach(parameterName -> 
+				context.set(parameterName, call.getParameter(parameterName).doubleValue()));
+
 		// set the argument value
 		context.set(call.getFunction().getArgumentName(), arg);
 

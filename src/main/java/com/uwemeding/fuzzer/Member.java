@@ -224,10 +224,7 @@ public class Member extends Node implements NameBearer {
 	 * @return the max
 	 */
 	double findMax() {
-		double max = Double.MIN_VALUE;
-		for (double y : exploded) {
-			max = y > max ? y : max;
-		}
+		double max = exploded.stream().reduce(Double.MIN_VALUE, (x,y) -> x > y ? x : y);
 		return max;
 	}
 
@@ -238,10 +235,10 @@ public class Member extends Node implements NameBearer {
 	 * @param normMax the normalized max
 	 */
 	void normalizeY(double yMax, int normMax) {
-		for (double y : exploded) {
+		exploded.forEach(y -> {
 			int norm = (int) Math.round((y / yMax) * normMax);
 			normalized.add(norm);
-		}
+		});
 	}
 
 	/**

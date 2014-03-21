@@ -160,12 +160,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 	 * @return true/false
 	 */
 	public boolean haveMember(String name) {
-		for (Member member : members) {
-			if (member.getName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
+		return members.stream().anyMatch((member) -> (member.getName().equals(name)));
 	}
 
 	/**
@@ -234,7 +229,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 		double step = getStep().doubleValue();
 
 		// enumerate the variable range
-		for (Member member : members()) {
+		members().forEach(member -> {
 			System.out.println("Member " + member.getName());
 			if (member.haveFunctionCall()) {
 				for (double i = start; i <= stop; i += step) {
@@ -246,7 +241,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 					member.calculateValueAt(i);
 				}
 			}
-		}
+		});
 
 		// find the max over all members
 		double yMax = Double.MIN_VALUE;

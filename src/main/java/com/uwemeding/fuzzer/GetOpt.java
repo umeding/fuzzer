@@ -46,13 +46,7 @@ public class GetOpt {
 	}
 
 	public Iterable<Definition> definitions() {
-		return new Iterable<Definition>() {
-
-			@Override
-			public Iterator<Definition> iterator() {
-				return definitions.iterator();
-			}
-		};
+		return definitions::iterator;
 	}
 
 	public int getOptind() {
@@ -62,13 +56,7 @@ public class GetOpt {
 	public Iterable<Option> parse(final String... av) {
 		optind = av.length;
 		final GetOpt go = this;
-		return new Iterable<Option>() {
-
-			@Override
-			public Iterator<Option> iterator() {
-				return new OptionIterator(go, av);
-			}
-		};
+		return () -> new OptionIterator(go, av);
 	}
 
 	public static class Definition {

@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 /**
  * A fuzzy logic program.
- *
+ * <p>
  * @author uwe
  */
 public class Program {
@@ -51,7 +51,7 @@ public class Program {
 
 	/**
 	 * Get the program name.
-	 *
+	 * <p>
 	 * @return the program name
 	 */
 	public String getName() {
@@ -60,7 +60,7 @@ public class Program {
 
 	/**
 	 * Get the selected reasoning strategy.
-	 *
+	 * <p>
 	 * @return the selected reasoning strategy
 	 */
 	public ReasoningStrategy getReasoningStrategy() {
@@ -69,7 +69,7 @@ public class Program {
 
 	/**
 	 * Set the reasoning strategy.
-	 *
+	 * <p>
 	 * @param reasoningStrategy the reasoning strategy
 	 */
 	public void setReasoningStrategy(ReasoningStrategy reasoningStrategy) {
@@ -78,7 +78,7 @@ public class Program {
 
 	/**
 	 * Get epsilon.
-	 *
+	 * <p>
 	 * @return epsilon
 	 */
 	public Number getEpsilon() {
@@ -87,7 +87,7 @@ public class Program {
 
 	/**
 	 * Set epsilon.
-	 *
+	 * <p>
 	 * @param epsilon epsilon
 	 */
 	public void setEpsilon(Number epsilon) {
@@ -96,8 +96,8 @@ public class Program {
 
 	/**
 	 * Add a rule to this program.
-	 *
-	 * @param name is the rule name
+	 * <p>
+	 * @param name      is the rule name
 	 * @param condition is the rule condition
 	 * @return the rule
 	 */
@@ -109,7 +109,7 @@ public class Program {
 
 	/**
 	 * Get the rules.
-	 *
+	 * <p>
 	 * @return the rules
 	 */
 	public Collection<Rule> rules() {
@@ -118,7 +118,7 @@ public class Program {
 
 	/**
 	 * The rule names.
-	 *
+	 * <p>
 	 * @return the rule names
 	 */
 	public Collection<String> ruleNames() {
@@ -127,7 +127,7 @@ public class Program {
 
 	/**
 	 * Get a rule by name.
-	 *
+	 * <p>
 	 * @param name the rule name
 	 * @return the rule
 	 */
@@ -141,7 +141,7 @@ public class Program {
 
 	/**
 	 * Get the hedges.
-	 *
+	 * <p>
 	 * @return the hedges
 	 */
 	public Collection<Hedge> hedges() {
@@ -150,7 +150,7 @@ public class Program {
 
 	/**
 	 * Get a hedge by name.
-	 *
+	 * <p>
 	 * @param hedgeName the hedge name
 	 * @return the hedge
 	 */
@@ -160,7 +160,7 @@ public class Program {
 
 	/**
 	 * Add a hedge to this program.
-	 *
+	 * <p>
 	 * @param hedge the hedge
 	 * @return the hedge
 	 */
@@ -171,9 +171,9 @@ public class Program {
 
 	/**
 	 * Add a hedge by name.
-	 *
-	 * @param name name of the hedge
-	 * @param arg argument
+	 * <p>
+	 * @param name       name of the hedge
+	 * @param arg        argument
 	 * @param expression the expression
 	 * @return the hedge
 	 */
@@ -183,7 +183,7 @@ public class Program {
 
 	/**
 	 * Get the functions.
-	 *
+	 * <p>
 	 * @return the functions
 	 */
 	public Collection<Function> functions() {
@@ -192,7 +192,7 @@ public class Program {
 
 	/**
 	 * Get a function be name.
-	 *
+	 * <p>
 	 * @param functionName the function name
 	 * @return the function
 	 */
@@ -202,8 +202,8 @@ public class Program {
 
 	/**
 	 * Add a function to this program.
-	 *
-	 * @param <T> the function type
+	 * <p>
+	 * @param <T>      the function type
 	 * @param function the function
 	 * @return the function
 	 */
@@ -214,9 +214,9 @@ public class Program {
 
 	/**
 	 * Add an external function.
-	 *
+	 * <p>
 	 * @param klass external function class
-	 * @param m method with that class
+	 * @param m     method with that class
 	 * @return the function
 	 */
 	public ExternalFunction addExternalFunction(Class klass, Method m) {
@@ -225,8 +225,8 @@ public class Program {
 
 	/**
 	 * Add a piecewise function.
-	 *
-	 * @param name is the name of the function
+	 * <p>
+	 * @param name         is the name of the function
 	 * @param argumentName argument name
 	 * @return the function
 	 */
@@ -236,7 +236,7 @@ public class Program {
 
 	/**
 	 * Get the inputs.
-	 *
+	 * <p>
 	 * @return the inputs
 	 */
 	public Collection<Variable> inputs() {
@@ -245,7 +245,7 @@ public class Program {
 
 	/**
 	 * Get an input by name.
-	 *
+	 * <p>
 	 * @param inputName the input name
 	 * @return the input
 	 */
@@ -255,7 +255,7 @@ public class Program {
 
 	/**
 	 * Add an input variable to this program.
-	 *
+	 * <p>
 	 * @param var the variable
 	 * @return the input variable
 	 */
@@ -267,11 +267,11 @@ public class Program {
 
 	/**
 	 * Add an input variable to this program.
-	 *
-	 * @param <T> the type
+	 * <p>
+	 * @param <T>  the type
 	 * @param name the variable name
 	 * @param from start of interval
-	 * @param to end of interval
+	 * @param to   end of interval
 	 * @param step the step
 	 * @return the variable
 	 */
@@ -281,7 +281,7 @@ public class Program {
 
 	/**
 	 * Get the outputs.
-	 *
+	 * <p>
 	 * @return the outputs
 	 */
 	public Collection<Variable> outputs() {
@@ -290,7 +290,7 @@ public class Program {
 
 	/**
 	 * Get an output by name.
-	 *
+	 * <p>
 	 * @param outputName the output name
 	 * @return the output
 	 */
@@ -300,7 +300,7 @@ public class Program {
 
 	/**
 	 * Add an output variable to this program.
-	 *
+	 * <p>
 	 * @param var the variable
 	 * @return the output variable
 	 */
@@ -312,11 +312,11 @@ public class Program {
 
 	/**
 	 * Add an output variable to this program.
-	 *
-	 * @param <T> the type
+	 * <p>
+	 * @param <T>  the type
 	 * @param name the variable name
 	 * @param from start of interval
-	 * @param to end of interval
+	 * @param to   end of interval
 	 * @param step the step
 	 * @return the variable
 	 */
@@ -326,7 +326,7 @@ public class Program {
 
 	/**
 	 * Check if a variable is unique.
-	 *
+	 * <p>
 	 * @param var the variable
 	 */
 	private void checkUnique(Variable var) {
@@ -340,10 +340,10 @@ public class Program {
 
 	/**
 	 * Get an item from a map.
-	 *
-	 * @param <T> the map type
+	 * <p>
+	 * @param <T>      the map type
 	 * @param itemName the item name
-	 * @param items the items
+	 * @param items    the items
 	 * @param typeName the item type name
 	 * @return the item
 	 */
@@ -357,10 +357,10 @@ public class Program {
 
 	/**
 	 * Add an item to a map.
-	 *
-	 * @param <T> the item type
-	 * @param item the item
-	 * @param items the item map
+	 * <p>
+	 * @param <T>      the item type
+	 * @param item     the item
+	 * @param items    the item map
 	 * @param typeName the item type name string
 	 */
 	private <T extends NameBearer> void addItem(T item, Map<String, T> items, String typeName) {
@@ -375,7 +375,7 @@ public class Program {
 
 	/**
 	 * Dump the content of the program.
-	 *
+	 * <p>
 	 * @param fp the printer
 	 */
 	public void dump(PrintStream fp) {
@@ -390,34 +390,23 @@ public class Program {
 		fp.println();
 
 		Set<String> names = new TreeSet<>(hedges.keySet());
-		for (String name : names) {
-			Hedge hedge = hedges.get(name);
-			fp.format(FMT, name, "<hedge>", hedge.getExpression());
-		}
+		names.forEach(name
+				-> fp.format(FMT, name, "<hedge>", hedges.get(name).getExpression())
+		);
 
 		names = new TreeSet<>(functions.keySet());
-		for (String name : names) {
-			Function function = functions.get(name);
-			fp.format(FMT, name, "<func def>", function.toLogString());
-		}
+		names.forEach(name
+				-> fp.format(FMT, name, "<func def>", functions.get(name).toLogString())
+		);
 
 		names = new TreeSet<>(inputs.keySet());
-		for (String name : names) {
-			Variable var = inputs.get(name);
-			dump(fp, var, "input");
-		}
+		names.forEach(name -> dump(fp, inputs.get(name), "input"));
 
 		names = new TreeSet<>(outputs.keySet());
-		for (String name : names) {
-			Variable var = outputs.get(name);
-			dump(fp, var, "output");
-		}
+		names.forEach(name -> dump(fp, outputs.get(name), "output"));
 
 		names = new TreeSet<>(rules.keySet());
-		for (String name : names) {
-			Rule rule = rules.get(name);
-			fp.format(FMT, name, "<rule>", rule.toString());
-		}
+		names.forEach(name -> fp.format(FMT, name, "<rule>", rules.get(name)));
 
 		// we are done
 		fp.println();
@@ -431,8 +420,8 @@ public class Program {
 			return;
 		}
 
-		for (Member member : var.members()) {
-			fp.format(FMT, var.getName() + "#" + member.getName(), "<member>", member.toLogString());
-		}
+		var.members().forEach(member
+				-> fp.format(FMT, var.getName() + "#" + member.getName(), "<member>", member.toLogString())
+		);
 	}
 }
