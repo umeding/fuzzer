@@ -14,8 +14,8 @@ import com.uwemeding.fuzzer.Rule;
 import com.uwemeding.fuzzer.Variable;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 /**
  * The JAVA output strategy.
@@ -76,7 +76,6 @@ public class JavaOutputType implements FuzzerOutput {
 		method.addLine();
 		method.addC(true, "Calculate the crisp values");
 		method.addLine("CRISP crisp = new CRISP(");
-		StringBuilder sb = new StringBuilder();
 		int noutputs = program.outputs().size();
 		for (Variable v : program.outputs()) {
 			String delim = --noutputs > 0 ? "," : "";

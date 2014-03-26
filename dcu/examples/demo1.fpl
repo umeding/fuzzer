@@ -1,3 +1,6 @@
+package com.uwemeding.fuzzer.demo;
+
+program Demo2 {
 
 hedge very(x) x^2;
 hedge slightly(x) (x ^ 1.25) && (1 - (x ^ 2));
@@ -27,4 +30,5 @@ rule r1 {
 }
 
 rule r2 {
+}
 }

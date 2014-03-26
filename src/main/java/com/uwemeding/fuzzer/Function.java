@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Unary function definition.
@@ -132,12 +133,8 @@ public abstract class Function implements NameBearer {
 		sb.append("(").append(argumentName).append(")");
 
 		if (!parameters.isEmpty()) {
-			String delim = " with parameters (";
-			for (String parameter : parameters) {
-				sb.append(delim).append(parameter);
-				delim = ", ";
-			}
-			sb.append(")");
+			StringJoiner sj = new StringJoiner(","," with parameters (", ")");
+			parameters.forEach(parameter -> sj.add(parameter));
 		}
 		return sb.toString();
 	}

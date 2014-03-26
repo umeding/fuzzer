@@ -1,0 +1,240 @@
+/*
+ * Copyright (c) 2014 Meding Software Technik -- All Rights Reserved.
+ */
+PARSER_BEGIN(FuzzerParser)
+
+package com.uwemeding.fuzzer.parser;
+
+import java.io.*;
+import com.uwemeding.fuzzer.*;
+
+public class FuzzerParser {
+
+    public FuzzerParser() {
+    }
+
+    /** 
+     * Parse a fuzzer program file.
+     * @param in is the input stream
+     * @return the program
+     */
+    public Program parse(InputStream in) {
+        try {
+            FuzzerParser parser = new FuzzerParser(in);
+            return parser.FuzzerProgram();
+        } catch(ParseException e) {
+            throw new FuzzerException("Error parsing program definitions", e);
+        }
+    }
+
+    public static void main(String...av) {
+        Program program = new FuzzerParser().parse(System.in);
+        program.dump(System.out);
+    }
+}
+
+PARSER_END(FuzzerParser)
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* Reserved words */
+{
+  < PACKAGE: "package" >
+| < PROGRAM: "program" >
+| < HEDGE: "hedge" >
+| < FUNCTION: "function" >
+}
+
+TOKEN : /* LITERALS */
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|
+  < #LETTER:
+      [
+       "\u0024",                // $
+       "\u0041"-"\u005a",       // A-Z
+       "\u005f",                // _
+       "\u0061"-"\u007a"        // a-z
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039"        // 0-9
+      ]
+  >
+}
+
+TOKEN : /* SEPARATORS */
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+}
+
+
+/*
+ * FUZZER GRAMMAR
+ */
+
+Program FuzzerProgram() :
+{
+Program program = null;
+}
+{
+  [ PackageDeclaration() ]
+  program = ProgramDeclaration()
+  <EOF>
+  {
+    return program;
+  }
+}
+
+void PackageDeclaration() :
+{}
+{
+  "package" Name() ";"
+}
+
+Program ProgramDeclaration() :
+{
+Program program;
+String programName;
+}
+{
+  "program" programName = VariableDeclarator() "{"
+  {
+    program = new Program(programName);
+  }
+  ( ProgramBodyDeclaration(program) )* "}"
+  {
+    return program;
+  }
+}
+
+/*
+Program ProgramNameDeclaration() :
+{
+Token name;
+}
+{
+  LOOKAHEAD( "program" <IDENTIFIER> "{" )
+  "program" <IDENTIFIER> 
+  {
+    name = getToken(1);
+    return new Program(name.image);
+  }
+}
+*/
+
+
+void ProgramBodyDeclaration(Program program) :
+{}
+{
+  "hedge" VariableDeclarator() "("  VariableDeclarator() ")" ";"
+|
+  "function" VariableDeclarator() "(" VariableDeclarator() ")" ";"
+}
+
+
+String VariableDeclarator() :
+{}
+{
+  <IDENTIFIER>
+  {
+    return getToken(0).image;
+  }
+}
+
+void Name() :
+/*
+ * A lookahead of 2 is required below since "Name" can be followed
+ * by a ".*" when used in the context of an "ImportDeclaration".
+ */
+{}
+{
+  <IDENTIFIER>
+  ( LOOKAHEAD(2) "." <IDENTIFIER>
+  )*
+}
+
+void NameList() :
+{}
+{
+  Name()
+  ( "," Name()
+  )*
+}
+
+
