@@ -2,14 +2,14 @@ package com.uwemeding.fuzzer.demo;
 
 program Demo2 {
 
-hedge very(x) x^2;
-hedge slightly(x) (x ^ 1.25) && (1 - (x ^ 2));
+hedge very(x) -> x^2;
+hedge slightly(x) -> (x ^ 1.25) && (1 - (x ^ 2));
 
 function S(x) piecewise A,B,C {
-    < .. A = 0;
-    A .. B = 2*((x-A)/(C-A))^2;
-    B .. C = 1-2*((x-A)/(C-A))^2;
-    C .. > = 1;
+    < .. A -> 0;
+    A .. B -> 2*((x-A)/(C-A))^2;
+    B .. C -> 1-2*((x-A)/(C-A))^2;
+    C .. > -> 1;
 }
 function sin(x) external java.lang.Math.sin(x);
 

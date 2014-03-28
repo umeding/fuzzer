@@ -12,21 +12,15 @@ import java.lang.reflect.Method;
  */
 public class ExternalFunction extends Function {
 
-	private final Class klass;
-	private final Method method;
+	private Class externalClass;
+	private Method method;
 
-	public ExternalFunction(Class klass, Method method) {
-		super(klass.getName() + "#" + method.getName(), "x");
-		this.klass = klass;
-		this.method = method;
+	public ExternalFunction(String name, String argumentName) {
+		super(name, argumentName);
 	}
 
-	public Class getKlass() {
-		return klass;
-	}
-
-	public Method getMethod() {
-		return method;
+	public void setupClassReference(String externalClassReference, String arg) throws NoSuchMethodException {
+//		System.out.println("class: "+externalClassReference+" arg: "+arg);
 	}
 
 	/**

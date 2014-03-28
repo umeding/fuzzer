@@ -5,8 +5,10 @@ PARSER_BEGIN(FuzzerParser)
 
 package com.uwemeding.fuzzer.parser;
 
-import java.io.*;
 import com.uwemeding.fuzzer.*;
+
+import java.io.InputStream;
+import java.util.StringJoiner;
 
 public class FuzzerParser {
 
@@ -57,6 +59,8 @@ TOKEN : /* Reserved words */
 | < PROGRAM: "program" >
 | < HEDGE: "hedge" >
 | < FUNCTION: "function" >
+| < PIECEWISE: "piecewise" >
+| < EXTERNAL: "external" >
 }
 
 TOKEN : /* LITERALS */
@@ -130,9 +134,16 @@ TOKEN : /* IDENTIFIERS */
   >
 }
 
+TOKEN : // Expression
+{
+  < EXPRESSION : "->" (~[";"])+  >
+}
+
 TOKEN : /* SEPARATORS */
 {
-  < LPAREN: "(" >
+  < LESS: "<" >
+| < GREATER: ">" >
+| < LPAREN: "(" >
 | < RPAREN: ")" >
 | < LBRACE: "{" >
 | < RBRACE: "}" >
@@ -140,6 +151,7 @@ TOKEN : /* SEPARATORS */
 | < RBRACKET: "]" >
 | < SEMICOLON: ";" >
 | < COMMA: "," >
+| < RANGE: ".." >
 | < DOT: "." >
 }
 
@@ -183,30 +195,91 @@ String programName;
   }
 }
 
-/*
-Program ProgramNameDeclaration() :
-{
-Token name;
-}
-{
-  LOOKAHEAD( "program" <IDENTIFIER> "{" )
-  "program" <IDENTIFIER> 
-  {
-    name = getToken(1);
-    return new Program(name.image);
-  }
-}
-*/
-
 
 void ProgramBodyDeclaration(Program program) :
-{}
 {
-  "hedge" VariableDeclarator() "("  VariableDeclarator() ")" ";"
+String name;
+String expr;
+String arg;
+}
+{
+  "hedge" name=VariableDeclarator() "("  arg=VariableDeclarator() ")" expr = Expression() ";"
+  {
+    program.addHedge(name, arg, expr);
+  }
 |
-  "function" VariableDeclarator() "(" VariableDeclarator() ")" ";"
+  LOOKAHEAD( "function" VariableDeclarator() "(" VariableDeclarator() ")" "piecewise" )
+  "function" name=VariableDeclarator() "(" arg=VariableDeclarator() ")" "piecewise"
+  {
+    PiecewiseFunction pwFunc = program.addPiecewiseFunction(name, arg);
+  }
+  PiecewiseDeclaration(pwFunc)  "{" ( PiecewiseRange(pwFunc))* "}"
+|
+  LOOKAHEAD( "function" VariableDeclarator() "(" VariableDeclarator() ")" "external" )
+  "function" name=VariableDeclarator() "(" arg=VariableDeclarator() ")" "external" 
+  {
+    ExternalFunction extFunc = program.addExternalFunction(name, arg);
+  }
+  ExternalFunctionDeclaration(extFunc) ";"
 }
 
+/*
+ * Extract the piecewise declarations
+ */
+void PiecewiseDeclaration(PiecewiseFunction pwFunc) :
+{
+String var;
+}
+{
+  var = VariableDeclarator()
+  {
+    pwFunc.addParameter(var);
+  }
+  ( "," var = VariableDeclarator() 
+  {
+    pwFunc.addParameter(var);
+  }
+  )*
+}
+
+void PiecewiseRange(PiecewiseFunction pwFunc) :
+{
+String from, to, expr;
+}
+{
+  LOOKAHEAD( ".." <IDENTIFIER>)
+  ".." to=VariableDeclarator() expr=Expression() ";"
+  {
+    pwFunc.add(">", to, expr);
+  }
+|
+  LOOKAHEAD(<IDENTIFIER>  ".." <IDENTIFIER>)
+  from=VariableDeclarator() ".." to=VariableDeclarator() expr=Expression() ";"
+  {
+    pwFunc.add(from, to, expr);
+  }
+|
+  LOOKAHEAD(<IDENTIFIER>  "..")
+  from=VariableDeclarator() ".." expr=Expression() ";"
+  {
+    pwFunc.add(from, ">", expr);
+  }
+}
+
+/*
+ * External function reference
+ */
+void ExternalFunctionDeclaration(ExternalFunction extFunc) :
+{
+String name;
+String var;
+}
+{
+  name=Name() "(" var=VariableDeclarator() ")" 
+  {
+    extFunc.setupClassReference(name, var);
+  }
+}
 
 String VariableDeclarator() :
 {}
@@ -217,16 +290,37 @@ String VariableDeclarator() :
   }
 }
 
-void Name() :
-/*
- * A lookahead of 2 is required below since "Name" can be followed
- * by a ".*" when used in the context of an "ImportDeclaration".
- */
+String Expression() :
 {}
 {
-  <IDENTIFIER>
-  ( LOOKAHEAD(2) "." <IDENTIFIER>
+  <EXPRESSION>
+  {
+    String expr = getToken(0).image.substring(2).trim();
+    return expr;
+  }
+}
+
+/*
+ * Extract a fully-qualified name
+ */
+String Name() :
+{
+String name;
+StringJoiner sj = new StringJoiner(".");
+}
+{
+  name=VariableDeclarator()
+  {
+    sj.add(name);
+  }
+  ( "." name=VariableDeclarator()
+  {
+    sj.add(name);
+  }
   )*
+  {
+    return sj.toString();
+  }
 }
 
 void NameList() :

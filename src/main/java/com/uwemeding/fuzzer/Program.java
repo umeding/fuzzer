@@ -215,12 +215,12 @@ public class Program {
 	/**
 	 * Add an external function.
 	 * <p>
-	 * @param klass external function class
-	 * @param m     method with that class
+	 * @param name function name
+	 * @param argumentName the argument name
 	 * @return the function
 	 */
-	public ExternalFunction addExternalFunction(Class klass, Method m) {
-		return addFunction(new ExternalFunction(klass, m));
+	public ExternalFunction addExternalFunction(String name, String argumentName) {
+		return addFunction(new ExternalFunction(name, argumentName));
 	}
 
 	/**

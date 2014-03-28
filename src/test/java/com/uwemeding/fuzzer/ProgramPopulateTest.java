@@ -42,9 +42,8 @@ public class ProgramPopulateTest extends TestCase {
 
 		// Add an external function
 		try {
-			Class klass = Math.class;
-			Method method = klass.getDeclaredMethod("sin", double.class);
-			Function extern = p.addExternalFunction(klass, method);
+			ExternalFunction extern = p.addExternalFunction("sin", "x");
+			extern.setupClassReference("java.lang.Math", "sin");
 
 		} catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
