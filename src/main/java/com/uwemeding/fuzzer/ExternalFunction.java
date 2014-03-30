@@ -19,7 +19,7 @@ public class ExternalFunction extends Function {
 		super(name, argumentName);
 	}
 
-	public void setupClassReference(String externalClassReference, String arg) throws NoSuchMethodException {
+	public void setupClassReference(String externalClassReference, String arg) {
 //		System.out.println("class: "+externalClassReference+" arg: "+arg);
 	}
 

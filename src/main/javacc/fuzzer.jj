@@ -33,6 +33,7 @@ public class FuzzerParser {
         Program program = new FuzzerParser().parse(System.in);
         program.dump(System.out);
     }
+
 }
 
 PARSER_END(FuzzerParser)
@@ -61,6 +62,14 @@ TOKEN : /* Reserved words */
 | < FUNCTION: "function" >
 | < PIECEWISE: "piecewise" >
 | < EXTERNAL: "external" >
+| < INPUT: "input" >
+| < OUTPUT: "output" >
+| < STEP: "step" >
+| < RULE: "rule" >
+| < IF: "if" >
+| < IS: "is" >
+| < AND: "and" >
+| < OR: "or" >
 }
 
 TOKEN : /* LITERALS */
@@ -221,6 +230,10 @@ String arg;
     ExternalFunction extFunc = program.addExternalFunction(name, arg);
   }
   ExternalFunctionDeclaration(extFunc) ";"
+| 
+  "input" FuzzyVariableDeclaration(program, true)
+| 
+  "output" FuzzyVariableDeclaration(program, false)
 }
 
 /*
@@ -250,7 +263,7 @@ String from, to, expr;
   LOOKAHEAD( ".." <IDENTIFIER>)
   ".." to=VariableDeclarator() expr=Expression() ";"
   {
-    pwFunc.add(">", to, expr);
+    pwFunc.add("<", to, expr);
   }
 |
   LOOKAHEAD(<IDENTIFIER>  ".." <IDENTIFIER>)
@@ -281,12 +294,124 @@ String var;
   }
 }
 
+/*
+ * Fuzzy variable delaration
+ */
+void FuzzyVariableDeclaration(Program program, boolean isInput) :
+{
+String name;
+Number from, to, step;
+Variable var;
+}
+{
+  name=VariableDeclarator() "(" from=NumberReference() <RANGE> to=NumberReference() "step" step=NumberReference() ")"
+  {
+    var = isInput ? program.addInput(name, from, to, step) : program.addOutput(name, from, to, step);
+  }
+  "{" (MemberDefinition(program, var))* "}"
+}
+
+void MemberDefinition(Program program, Variable var) :
+{
+String name;
+Member member;
+}
+{
+  LOOKAHEAD(<IDENTIFIER> "=" "{")
+  name=VariableDeclarator() "=" 
+  {
+    member = var.addMember(name);
+  }
+  (MemberStep(member))+ ";"
+|
+  LOOKAHEAD(<IDENTIFIER> "=" <IDENTIFIER>)
+  name=VariableDeclarator() "=" FunctionCall(program, name) ";"
+}
+
+void MemberStep(Member member) :
+{
+Number x, y;
+}
+{
+  "{" x=NumberReference() ("," | ";" | ":")? y=NumberReference() "}" 
+  {
+    member.add(x, y);
+  }
+}
+
+void FunctionCall(Program program, String memberName) :
+{
+String functionName;
+Function function;
+FunctionCall call;
+}
+{
+  functionName=VariableDeclarator()
+  {
+    function = program.getFunction(functionName);
+    call = new FunctionCall(function);
+  }
+  "(" (NumberParameters(call))+ ")"
+}
+
+void NumberParameters(FunctionCall call) :
+{
+Number parameter;
+}
+{
+  parameter=NumberReference()
+  {
+    call.bindParameter(parameter);
+  }
+  (
+    "," parameter=NumberReference()
+    {
+      call.bindParameter(parameter);
+    }
+  )*
+}
+
+/*
+ * A variable name
+ */
 String VariableDeclarator() :
 {}
 {
   <IDENTIFIER>
   {
     return getToken(0).image;
+  }
+}
+
+Number NumberReference() :
+{
+boolean haveSign = false;
+Number number;
+}
+{
+  (
+    "-"
+    {
+      haveSign = true;
+    }
+
+  )?
+  number=UnsignedNumberReference()
+  {
+    return haveSign ? -number.doubleValue() : number;
+  }
+}
+Number UnsignedNumberReference() :
+{}
+{
+  <INTEGER_LITERAL>
+  {
+    return Double.parseDouble(getToken(0).image);
+  }
+|
+  <FLOATING_POINT_LITERAL>
+  {
+    return Double.parseDouble(getToken(0).image);
   }
 }
 

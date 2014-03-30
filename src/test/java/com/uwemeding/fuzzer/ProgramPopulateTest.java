@@ -45,7 +45,7 @@ public class ProgramPopulateTest extends TestCase {
 			ExternalFunction extern = p.addExternalFunction("sin", "x");
 			extern.setupClassReference("java.lang.Math", "sin");
 
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 		Variable v;

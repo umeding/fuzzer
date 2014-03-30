@@ -2,33 +2,32 @@ package com.uwemeding.fuzzer.demo;
 
 program Demo2 {
 
-hedge very(x) -> x^2;
-hedge slightly(x) -> (x ^ 1.25) && (1 - (x ^ 2));
+    hedge very(x) -> x^2;
+    hedge slightly(x) -> (x ^ 1.25) && (1 - (x ^ 2));
 
-function S(x) piecewise A,B,C {
-    < .. A -> 0;
-    A .. B -> 2*((x-A)/(C-A))^2;
-    B .. C -> 1-2*((x-A)/(C-A))^2;
-    C .. > -> 1;
-}
-function sin(x) external java.lang.Math.sin(x);
-
-input int theta(-128..127 step 2) {
-    nb = {-128,1} {-64,0.5} {-32,0.0};
-    ns = -64,0.0 -32,1.0 0,0.0;
-}
-
-output int veloc(-5..5 step 0.1) {
-    nb = {-5,1} {-2,1} {-1,0};
-}
-
-
-rule r1 {
-    if((theta is very pb) and (dtheta is z)) {
-        veloc = z;
+    function S(x) piecewise A,B,C {
+        .. A -> 0;
+        A .. B -> 2*((x-A)/(C-A))^2;
+        B .. C -> 1-2*((x-A)/(C-A))^2;
+        C ..   -> 1;
     }
-}
+    function sin(x) external java.lang.Math.sin(x);
 
-rule r2 {
-}
+    input theta(-128 .. 127 step 2) {
+        nb = {-128,1} {-64,0.5} {-32,0.0};
+        ns = {-64,0.0} {-32,1.0} {0,0.0};
+        z = S(-10,0,10);
+    }
+
+    output veloc(-5 .. 5 step 0.1) {
+        nb = {-5,1} {-2,1} {-1,0};
+    }
+
+/*
+    rule r1 {
+        if((theta is very pb) and (dtheta is z)) {
+            veloc = z;
+        }
+    }
+*/
 }
