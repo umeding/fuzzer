@@ -66,7 +66,6 @@ TOKEN : /* Reserved words */
 | < OUTPUT: "output" >
 | < STEP: "step" >
 | < RULE: "rule" >
-| < IF: "if" >
 | < IS: "is" >
 | < AND: "and" >
 | < OR: "or" >
@@ -234,6 +233,8 @@ String arg;
   "input" FuzzyVariableDeclaration(program, true)
 | 
   "output" FuzzyVariableDeclaration(program, false)
+| 
+  "rule" FuzzyRule(program) 
 }
 
 /*
@@ -354,6 +355,79 @@ FunctionCall call;
   "(" (NumberParameters(call))+ ")"
 }
 
+/*
+ * Fuzzy rule
+ */
+void FuzzyRule(Program program) :
+{
+String name;
+Rule rule;
+Node condition;
+}
+{
+  name=VariableDeclarator() condition=RuleCondition(program)
+  {
+    rule = program.addRule(name, condition);
+  }
+  "{" "}"
+}
+
+Node RuleCondition(Program program) :
+{
+String varName;
+String memberName;
+String hedge = null;
+Node left, right;
+}
+{
+  left=InSetCondition()
+  {
+    return left;
+  }
+|
+  "(" left=RuleCondition(program) ("and" | "or") right=RuleCondition(program) ")" 
+  {
+    String join = getToken(2).image;
+    switch(join) {
+    case "and":
+        return Conditions.createAndCondition(left, right);
+    case "or":
+        return Conditions.createOrCondition(left, right);
+    default:
+        throw generateParseException();
+    }
+  } 
+  
+}
+
+Node InSetCondition() :
+{
+String varName;
+String memberName;
+String hedge = null;
+}
+{
+  LOOKAHEAD(5)
+  "(" varName=VariableDeclarator() "is" hedge=VariableDeclarator() memberName=VariableDeclarator() ")"
+  {
+    Variable var = program.getInput(varName);
+    Member member = var.getMember(memberName);
+    return Conditions.createInCondition(var, member);
+  }
+|
+  LOOKAHEAD(4)
+  "(" varName=VariableDeclarator() "is" memberName=VariableDeclarator() ")"
+  {
+    Variable var = program.getInput(varName);
+    Member member = var.getMember(memberName);
+    return Conditions.createInCondition(var, member);
+  }
+}
+
+
+/*
+ * Parse a sequence of numbers
+ */
 void NumberParameters(FunctionCall call) :
 {
 Number parameter;

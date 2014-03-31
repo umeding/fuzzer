@@ -30,4 +30,12 @@ program Demo2 {
         }
     }
 */
+
+    rule r1(theta is very nb) {
+
+    }
+
+    rule r2((theta is very nb) and (theta is ns)) {
+
+    }
 }

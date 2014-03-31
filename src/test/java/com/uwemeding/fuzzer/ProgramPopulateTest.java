@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import org.junit.Test;
 
