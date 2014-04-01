@@ -11,7 +11,7 @@ import java.util.Objects;
 
 /**
  * Fuzzy range members.
- *
+ * <p>
  * @author uwe
  */
 public class Member extends Node implements NameBearer {
@@ -39,7 +39,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the member name
-	 *
+	 * <p>
 	 * @return the member name
 	 */
 	@Override
@@ -49,7 +49,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the node type.
-	 *
+	 * <p>
 	 * @return MEMBER
 	 */
 	@Override
@@ -59,7 +59,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Test if we have a function call.
-	 *
+	 * <p>
 	 * @return true/false
 	 */
 	public boolean haveFunctionCall() {
@@ -68,7 +68,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the function call for this member.
-	 *
+	 * <p>
 	 * @return the function call
 	 */
 	public FunctionCall getFunctionCall() {
@@ -80,7 +80,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Add a point to the members.
-	 *
+	 * <p>
 	 * @param p is the point
 	 * @return this member
 	 */
@@ -91,7 +91,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Add a point to the members.
-	 *
+	 * <p>
 	 * @param x x
 	 * @param y y
 	 * @return the member
@@ -102,7 +102,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the size of the point list
-	 *
+	 * <p>
 	 * @return the size
 	 */
 	public int size() {
@@ -111,7 +111,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * The list of points.
-	 *
+	 * <p>
 	 * @return the points
 	 */
 	public List<Point> points() {
@@ -144,7 +144,8 @@ public class Member extends Node implements NameBearer {
 		StringBuilder sb = new StringBuilder();
 		if (haveFunctionCall()) {
 			Function func = getFunctionCall().getFunction();
-			sb.append(func.getName()).append("(").append(func.getArgumentName()).append(") -> ");
+//			sb.append(func.getName()).append("(").append(func.getArgumentName()).append(") -> ");
+			sb.append(getFunctionCall().toLogString()).append(" -> ");
 		}
 		sb.append("[");
 		String delim = "";
@@ -158,15 +159,15 @@ public class Member extends Node implements NameBearer {
 
 	@Override
 	public String toString() {
-		return "Member{" + "name=" + name + ", points=" + points + ", functionCall=" + functionCall + ", exploded=" + exploded + ", normalized=" + normalized + '}';
+		return "Member{" + "name=" + name + '}';
 	}
 
 	// ================= CALCULAIONS ========================================
 	/**
 	 * Adjust the point list so we have values at the end points
-	 *
+	 * <p>
 	 * @param start start interval
-	 * @param stop end interval
+	 * @param stop  end interval
 	 */
 	public void calculateEndPoints(double start, double stop) {
 
@@ -184,7 +185,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Calculate the value of a function at a point
-	 *
+	 * <p>
 	 * @parm x is the point
 	 */
 	void calculateFunctionAt(double x) {
@@ -197,7 +198,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Calculate the value at a particular point.
-	 *
+	 * <p>
 	 * @param x the x value
 	 */
 	void calculateValueAt(double x) {
@@ -220,18 +221,18 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Find the max.
-	 *
+	 * <p>
 	 * @return the max
 	 */
 	double findMax() {
-		double max = exploded.stream().reduce(Double.MIN_VALUE, (x,y) -> x > y ? x : y);
+		double max = exploded.stream().reduce(Double.MIN_VALUE, (x, y) -> x > y ? x : y);
 		return max;
 	}
 
 	/**
 	 * Create the normalized point set.
-	 *
-	 * @param yMax the overall max value
+	 * <p>
+	 * @param yMax    the overall max value
 	 * @param normMax the normalized max
 	 */
 	void normalizeY(double yMax, int normMax) {
@@ -243,7 +244,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the exploded values.
-	 *
+	 * <p>
 	 * @return the exploded values
 	 */
 	public Collection<Double> exploded() {
@@ -252,7 +253,7 @@ public class Member extends Node implements NameBearer {
 
 	/**
 	 * Get the normalied values.
-	 *
+	 * <p>
 	 * @return the normalized values
 	 */
 	public List<Integer> normalized() {

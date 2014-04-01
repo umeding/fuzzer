@@ -150,7 +150,7 @@ public class Conditions {
 		public String toString() {
 			String leftName = nodeName(left);
 			String rightName = nodeName(right);
-			return "Condition{" + "nodeType=" + nodeType + ", left=" + leftName + ", right=" + rightName + '}';
+			return "Condition{" + "nodeType=" + nodeType + ", left=" + left + ", right=" + right + '}';
 		}
 
 	}

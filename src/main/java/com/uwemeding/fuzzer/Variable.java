@@ -219,6 +219,12 @@ public class Variable extends Node implements NameBearer,Comparable {
 		return dataTypeName + " [" + from + ", " + to + "] step by " + step;
 	}
 
+	@Override
+	public String toString() {
+		return "Variable{" + "name=" + name + '}';
+	}
+
+
 	// ========== EVALUATIONS ================================================
 	/**
 	 * Calculate the full fuzzy space for this variable.

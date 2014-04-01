@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 /**
  * Fuzzy set rule.
- *
+ * <p>
  * @author uwe
  */
 public class Rule {
@@ -31,7 +31,7 @@ public class Rule {
 
 	/**
 	 * Get the rule name.
-	 *
+	 * <p>
 	 * @return the rule name
 	 */
 	public String getName() {
@@ -40,7 +40,7 @@ public class Rule {
 
 	/**
 	 * Get the rule condition.
-	 *
+	 * <p>
 	 * @return the condition
 	 */
 	public Node getCondition() {
@@ -49,9 +49,9 @@ public class Rule {
 
 	/**
 	 * Assign a variable.
-	 *
+	 * <p>
 	 * @param var the variable
-	 * @param m the member
+	 * @param m   the member
 	 * @return this rule
 	 */
 	public Rule assign(Variable var, Member m) {
@@ -61,7 +61,7 @@ public class Rule {
 
 	/**
 	 * Get the number if assignments
-	 *
+	 * <p>
 	 * @return assignment count
 	 */
 	public int assignmentCount() {
@@ -70,7 +70,7 @@ public class Rule {
 
 	/**
 	 * Get the assignment variables.
-	 *
+	 * <p>
 	 * @return the assignment variables
 	 */
 	public Collection<Variable> assignmentVariables() {
@@ -79,7 +79,7 @@ public class Rule {
 
 	/**
 	 * Get the member assignment for the variable.
-	 *
+	 * <p>
 	 * @param var the variable
 	 * @return the member
 	 */
@@ -111,7 +111,7 @@ public class Rule {
 
 	@Override
 	public String toString() {
-		return "Rule{" + "name=" + name + '}';
+		return "Rule{" + "name=" + name + " cond=" + condition + '}';
 	}
 
 }

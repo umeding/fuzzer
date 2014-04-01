@@ -69,6 +69,10 @@ TOKEN : /* Reserved words */
 | < IS: "is" >
 | < AND: "and" >
 | < OR: "or" >
+| < REASONING : "reasoning" >
+| < MAXMIN: "max-min" >
+| < MAXDOT: "max-dot" >
+
 }
 
 TOKEN : /* LITERALS */
@@ -235,6 +239,8 @@ String arg;
   "output" FuzzyVariableDeclaration(program, false)
 | 
   "rule" FuzzyRule(program) 
+| 
+  "reasoning" FuzzyReasoning(program)
 }
 
 /*
@@ -314,19 +320,19 @@ Variable var;
 
 void MemberDefinition(Program program, Variable var) :
 {
-String name;
+String memberName;
 Member member;
 }
 {
   LOOKAHEAD(<IDENTIFIER> "=" "{")
-  name=VariableDeclarator() "=" 
+  memberName=VariableDeclarator() "=" 
   {
-    member = var.addMember(name);
+    member = var.addMember(memberName);
   }
   (MemberStep(member))+ ";"
 |
   LOOKAHEAD(<IDENTIFIER> "=" <IDENTIFIER>)
-  name=VariableDeclarator() "=" FunctionCall(program, name) ";"
+  memberName=VariableDeclarator() "=" FunctionCall(program, var, memberName) ";"
 }
 
 void MemberStep(Member member) :
@@ -340,7 +346,7 @@ Number x, y;
   }
 }
 
-void FunctionCall(Program program, String memberName) :
+void FunctionCall(Program program, Variable var, String memberName) :
 {
 String functionName;
 Function function;
@@ -352,83 +358,14 @@ FunctionCall call;
     function = program.getFunction(functionName);
     call = new FunctionCall(function);
   }
-  "(" (NumberParameters(call))+ ")"
-}
-
-/*
- * Fuzzy rule
- */
-void FuzzyRule(Program program) :
-{
-String name;
-Rule rule;
-Node condition;
-}
-{
-  name=VariableDeclarator() condition=RuleCondition(program)
+  [ "[" (FunctionCallParameters(program, var, memberName, call))* "]" ]
+  "(" VariableDeclarator() ")"  
   {
-    rule = program.addRule(name, condition);
-  }
-  "{" "}"
-}
-
-Node RuleCondition(Program program) :
-{
-String varName;
-String memberName;
-String hedge = null;
-Node left, right;
-}
-{
-  left=InSetCondition()
-  {
-    return left;
-  }
-|
-  "(" left=RuleCondition(program) ("and" | "or") right=RuleCondition(program) ")" 
-  {
-    String join = getToken(2).image;
-    switch(join) {
-    case "and":
-        return Conditions.createAndCondition(left, right);
-    case "or":
-        return Conditions.createOrCondition(left, right);
-    default:
-        throw generateParseException();
-    }
-  } 
-  
-}
-
-Node InSetCondition() :
-{
-String varName;
-String memberName;
-String hedge = null;
-}
-{
-  LOOKAHEAD(5)
-  "(" varName=VariableDeclarator() "is" hedge=VariableDeclarator() memberName=VariableDeclarator() ")"
-  {
-    Variable var = program.getInput(varName);
-    Member member = var.getMember(memberName);
-    return Conditions.createInCondition(var, member);
-  }
-|
-  LOOKAHEAD(4)
-  "(" varName=VariableDeclarator() "is" memberName=VariableDeclarator() ")"
-  {
-    Variable var = program.getInput(varName);
-    Member member = var.getMember(memberName);
-    return Conditions.createInCondition(var, member);
+    Member member = var.addMember(memberName, call);
   }
 }
 
-
-/*
- * Parse a sequence of numbers
- */
-void NumberParameters(FunctionCall call) :
+void FunctionCallParameters(Program program, Variable var, String memberName, FunctionCall call) :
 {
 Number parameter;
 }
@@ -446,6 +383,140 @@ Number parameter;
 }
 
 /*
+ * Parse a fuzzy rule.
+ */
+void FuzzyRule(Program program) :
+{
+String  ruleName;
+Node condition;
+Rule rule;
+}
+{
+  ruleName=VariableDeclarator() "(" condition=FuzzyCondition(program) ")"
+  {
+    rule = program.addRule(ruleName, condition);
+  }
+  "{" ( FuzzyRuleAssignment(program, rule) )* "}"
+}
+
+/*
+ * the fuzzy conditions
+ */
+Node FuzzyCondition(Program program) :
+{
+Node condition;
+}
+{
+  condition=FuzzyOrCondition(program) 
+  {
+    return condition;
+  }
+}
+
+/*
+ * OR condition: left-to-right
+ */
+Node FuzzyOrCondition(Program program) :
+{
+Node left;
+Node right;
+}
+{
+  left=FuzzyAndCondition(program) 
+  (
+    "or" right=FuzzyAndCondition(program)
+    {
+      left=Conditions.createOrCondition(left, right);
+    }
+  )*
+  {
+    return left;
+  }
+}
+
+/*
+ * AND condition: left-to-right
+ */
+Node FuzzyAndCondition(Program program) :
+{
+Node left;
+Node right;
+}
+{
+  left=FuzzyInSetCondition(program) 
+  (
+    "and" right=FuzzyInSetCondition(program)
+    {
+      left=Conditions.createAndCondition(left, right);
+    }
+  )*
+  {
+    return left;
+  }
+}
+
+Node FuzzyInSetCondition(Program program) :
+{
+String varName;
+String memberName;
+String hedge = null;
+Node node;
+}
+{
+  "(" node=FuzzyCondition(program) ")"
+  {
+    return node;
+  }
+|
+  LOOKAHEAD(4)
+  varName=VariableDeclarator() "is" hedge=VariableDeclarator() memberName=VariableDeclarator()
+  {
+    Variable var = program.getInput(varName);
+    Member member = var.getMember(memberName);
+    return Conditions.createInCondition(var, member);
+  }
+|
+  LOOKAHEAD(3)
+  varName=VariableDeclarator() "is" memberName=VariableDeclarator()
+  {
+    Variable var = program.getInput(varName);
+    Member member = var.getMember(memberName);
+    return Conditions.createInCondition(var, member);
+  }
+}
+
+void FuzzyRuleAssignment(Program program, Rule rule) :
+{
+String varName;
+String memberName;
+}
+{
+  varName=VariableDeclarator() "=" memberName=VariableDeclarator() ";"
+  {
+    Variable var = program.getOutput(varName);
+    Member member = var.getMember(memberName);
+    rule.assign(var, member);
+  }
+}
+
+/*
+ * Set the fuzzy reasoning
+ */
+void FuzzyReasoning(Program program) :
+{}
+{
+  "max-min" ";"
+  {
+    program.setReasoningStrategy(ReasoningStrategy.MAXMIN);
+  }
+|
+  "max-dot" ";"
+  {
+    program.setReasoningStrategy(ReasoningStrategy.MAXDOT);
+  }
+}
+
+/*
  * A variable name
  */
 String VariableDeclarator() :
@@ -457,6 +528,9 @@ String VariableDeclarator() :
   }
 }
 
+/*
+ * A number reference
+ */
 Number NumberReference() :
 {
 boolean haveSign = false;
@@ -489,6 +563,9 @@ Number UnsignedNumberReference() :
   }
 }
 
+/*
+ * Parse an expression
+ */
 String Expression() :
 {}
 {
@@ -512,22 +589,13 @@ StringJoiner sj = new StringJoiner(".");
   {
     sj.add(name);
   }
-  ( "." name=VariableDeclarator()
-  {
-    sj.add(name);
-  }
+  (
+    "." name=VariableDeclarator()
+    {
+      sj.add(name);
+    }
   )*
   {
     return sj.toString();
   }
 }
-
-void NameList() :
-{}
-{
-  Name()
-  ( "," Name()
-  )*
-}
-
-
