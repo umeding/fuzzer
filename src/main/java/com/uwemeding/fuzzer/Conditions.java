@@ -4,11 +4,9 @@
 package com.uwemeding.fuzzer;
 
 import static com.uwemeding.fuzzer.Node.Type.AND;
-import static com.uwemeding.fuzzer.Node.Type.HEDGING;
 import static com.uwemeding.fuzzer.Node.Type.IN;
 import static com.uwemeding.fuzzer.Node.Type.MEMBER;
 import static com.uwemeding.fuzzer.Node.Type.OR;
-import java.util.Arrays;
 import java.util.StringJoiner;
 
 /**
@@ -26,13 +24,10 @@ public class Conditions {
 	 * @return the in condition
 	 */
 	public static Node createInCondition(Variable var, Node cond) {
-		checkNode(cond, MEMBER, HEDGING);
+		checkNode(cond, MEMBER);
 		// make sure the member is part of the variable
 		Member member;
 		switch (cond.getNodeType()) {
-			case HEDGING:
-				member = ((Condition) cond).getRight().cast();
-				break;
 
 			case MEMBER:
 				member = cond.cast();
@@ -45,17 +40,6 @@ public class Conditions {
 			throw new FuzzerException(member.getName() + ": not a member of " + var.getName());
 		}
 		return new Condition(Node.Type.IN, var, cond);
-	}
-
-	/**
-	 * Create hedging condition
-	 * <p>
-	 * @param hedge  the hedge
-	 * @param member the member
-	 * @return the hedging node
-	 */
-	public static Node createHedgingCondition(Hedge hedge, Member member) {
-		return new Condition(Node.Type.HEDGING, hedge, member);
 	}
 
 	/**

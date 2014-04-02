@@ -19,22 +19,57 @@ public class Member extends Node implements NameBearer {
 	private final String name;
 	private final List<Point> points;
 	private final FunctionCall functionCall;
+	private final Hedge hedge;
 	// evals
 	private final List<Double> exploded;
 	private final List<Integer> normalized;
+	//
+	private boolean referenced;
 
-	public Member(String name, FunctionCall functionCall) {
+	protected Member(String name, FunctionCall functionCall, Hedge hedge) {
 		this.name = name;
 		this.functionCall = functionCall;
+		this.hedge = hedge;
 		this.points = new ArrayList<>();
 
 		// the exploded space
 		this.exploded = new ArrayList<>();
 		this.normalized = new ArrayList<>();
+
+		// not referenced to start with
+		this.referenced = false;
 	}
 
+	/**
+	 * Create a member with a function call.
+	 * <p>
+	 * @param name         the member name
+	 * @param functionCall the function call
+	 */
+	public Member(String name, FunctionCall functionCall) {
+		this(name, functionCall, null);
+	}
+
+	/**
+	 * Create a simple member.
+	 * <p>
+	 * @param name member name
+	 */
 	public Member(String name) {
 		this(name, null);
+	}
+
+	/**
+	 * Apply a hedge to the member.
+	 * <p>
+	 * @param hedge is the hedge
+	 * @return the hedged member
+	 */
+	public Member applyHedge(Hedge hedge) {
+		String newMemberName = hedge.getName() + "#" + name;
+		Member member = new Member(newMemberName, functionCall, hedge);
+		this.points.stream().forEach(point -> member.points.add(point));
+		return member;
 	}
 
 	/**
@@ -76,6 +111,45 @@ public class Member extends Node implements NameBearer {
 			throw new FuzzerException(name + ": no function call found");
 		}
 		return functionCall;
+	}
+
+	/**
+	 * Test if we have a hedge.
+	 * <p>
+	 * @return true/false
+	 */
+	public boolean haveHedge() {
+		return hedge != null;
+	}
+
+	/**
+	 * Get the hedge for this member,
+	 * <p>
+	 * @return the hedge
+	 */
+	public Hedge getHedge() {
+		if (hedge == null) {
+			throw new FuzzerException(name + ": no hedge found");
+		}
+		return hedge;
+	}
+
+	/**
+	 * Indicate if this member is referenced.
+	 * <p>
+	 * @return true/false
+	 */
+	public boolean isReferenced() {
+		return referenced;
+	}
+
+	/**
+	 * Set the reference indicator.
+	 * <p>
+	 * @param referenced true/false
+	 */
+	public void setReferenced(boolean referenced) {
+		this.referenced = referenced;
 	}
 
 	/**

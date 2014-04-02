@@ -3,14 +3,12 @@
  */
 package com.uwemeding.fuzzer;
 
-import static com.uwemeding.fuzzer.Node.Type.HEDGE;
-
 /**
  * Hedge functionality.
- *
+ * <p>
  * @author uwe
  */
-public class Hedge extends Node implements NameBearer {
+public class Hedge implements NameBearer {
 
 	private final String name;
 	private String arg;
@@ -34,11 +32,6 @@ public class Hedge extends Node implements NameBearer {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public Type getNodeType() {
-		return HEDGE;
 	}
 
 	public String getArg() {

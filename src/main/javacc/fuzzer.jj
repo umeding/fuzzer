@@ -459,7 +459,7 @@ Node FuzzyInSetCondition(Program program) :
 {
 String varName;
 String memberName;
-String hedge = null;
+String hedgeName = null;
 Node node;
 }
 {
@@ -469,10 +469,21 @@ Node node;
   }
 |
   LOOKAHEAD(4)
-  varName=VariableDeclarator() "is" hedge=VariableDeclarator() memberName=VariableDeclarator()
+  varName=VariableDeclarator() "is" hedgeName=VariableDeclarator() memberName=VariableDeclarator()
   {
     Variable var = program.getInput(varName);
-    Member member = var.getMember(memberName);
+    Member member;
+    if(var.haveMember(hedgeName, memberName)) {
+        // reuse an already hedged member
+        member = var.getMember(hedgeName, memberName);
+    } else {
+        // hedge a new member
+        Hedge hedge = program.getHedge(hedgeName);
+        member = var.getMember(memberName);
+        member = member.applyHedge(hedge);
+        var.addMember(member);
+    }
+    member.setReferenced(true);
     return Conditions.createInCondition(var, member);
   }
 |
@@ -481,6 +492,7 @@ Node node;
   {
     Variable var = program.getInput(varName);
     Member member = var.getMember(memberName);
+    member.setReferenced(true);
     return Conditions.createInCondition(var, member);
   }
 }

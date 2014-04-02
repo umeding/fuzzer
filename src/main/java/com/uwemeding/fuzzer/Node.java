@@ -15,9 +15,7 @@ public abstract class Node {
 		// low level nodes
 		VARIABLE,
 		MEMBER,
-		HEDGE,
 		// operations
-		HEDGING,
 		IN,
 		AND,
 		OR

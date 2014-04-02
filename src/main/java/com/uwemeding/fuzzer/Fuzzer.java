@@ -5,7 +5,7 @@ package com.uwemeding.fuzzer;
 
 /**
  * Main program.
- *
+ * <p>
  * @author uwe
  */
 public class Fuzzer {
@@ -18,8 +18,8 @@ public class Fuzzer {
 		options = new GetOpt()
 				.add("help", "h", false, "Some help")
 				.add("debug", "d", false, "Debug (currently default)")
-				.add("java", "j", false, "Java output")
-				.add("print", "p", true, "print");
+				.add("package", "p", true, "Java package")
+				.add("outputdir", "o", true, "Output directory");
 	}
 
 	private static void printHelp() {
@@ -40,16 +40,18 @@ public class Fuzzer {
 
 	private void execute(String... av) throws Exception {
 
-		for (GetOpt.Option opt : options.parse(av)) {
-
+		for (GetOpt.Option opt : options.parseOptions(av)) {
 			switch (opt.getLongName()) {
 				case "help":
 					printHelp();
 					return;
-
 			}
 
 		}
+		for (int i = options.getOptind(); i < av.length; i++) {
+			System.out.println("--> " + av[i]);
+		}
+		System.out.println("--> done");
 	}
 
 	public static void main(String... av) throws Exception {

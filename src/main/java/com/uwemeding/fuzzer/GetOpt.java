@@ -53,7 +53,7 @@ public class GetOpt {
 		return optind;
 	}
 
-	public Iterable<Option> parse(final String... av) {
+	public Iterable<Option> parseOptions(final String... av) {
 		optind = av.length;
 		final GetOpt go = this;
 		return () -> new OptionIterator(go, av);

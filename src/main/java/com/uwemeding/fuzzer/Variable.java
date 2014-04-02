@@ -11,10 +11,10 @@ import java.util.Objects;
 
 /**
  * Variable.
- *
+ * <p>
  * @author uwe
  */
-public class Variable extends Node implements NameBearer,Comparable {
+public class Variable extends Node implements NameBearer, Comparable {
 
 	private final String name;
 	private final Class<? extends Number> type;
@@ -56,7 +56,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the variable name.
-	 *
+	 * <p>
 	 * @return the variable name
 	 */
 	@Override
@@ -66,7 +66,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the member step count.
-	 *
+	 * <p>
 	 * @return the step count
 	 */
 	public int getTotalSteps() {
@@ -78,7 +78,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the node type.
-	 *
+	 * <p>
 	 * @return variable node
 	 */
 	@Override
@@ -88,7 +88,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the variable data type.
-	 *
+	 * <p>
 	 * @return the data type
 	 */
 	public Class<? extends Number> getType() {
@@ -97,7 +97,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the range start for this variable.
-	 *
+	 * <p>
 	 * @param <T>
 	 * @return the start
 	 */
@@ -107,7 +107,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the range end for this variable.
-	 *
+	 * <p>
 	 * @param <T>
 	 * @return the end
 	 */
@@ -117,7 +117,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the step.
-	 *
+	 * <p>
 	 * @param <T>
 	 * @return the step
 	 */
@@ -149,23 +149,23 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	@Override
 	public int compareTo(Object o) {
-		Variable other = (Variable)o;
+		Variable other = (Variable) o;
 		return this.getName().compareTo(other.getName());
 	}
 
 	/**
 	 * Test if this variable has a fuzzy member.
-	 *
-	 * @param name the fuzzy member name
+	 * <p>
+	 * @param memberName the fuzzy member name
 	 * @return true/false
 	 */
-	public boolean haveMember(String name) {
-		return members.stream().anyMatch((member) -> (member.getName().equals(name)));
+	public boolean haveMember(String memberName) {
+		return members.stream().anyMatch((member) -> (member.getName().equals(memberName)));
 	}
 
 	/**
 	 * Get a fuzzy member for the variable.
-	 *
+	 * <p>
 	 * @param memberName the member name
 	 * @return the fuzzy member
 	 */
@@ -179,9 +179,47 @@ public class Variable extends Node implements NameBearer,Comparable {
 	}
 
 	/**
+	 * Test if we have a hedged member
+	 * <p>
+	 * @param hedgeName  is the hedge name
+	 * @param memberName is the member name
+	 * @return true/false
+	 */
+	public boolean haveMember(String hedgeName, String memberName) {
+		String fullName = hedgeName + "#" + memberName;
+		return haveMember(fullName);
+	}
+
+	/**
+	 * Get a hedged member.
+	 * <p>
+	 * @param hedgeName  is the hedge name
+	 * @param memberName is the member name
+	 * @return the member
+	 */
+	public Member getMember(String hedgeName, String memberName) {
+		String fullName = hedgeName + "#" + memberName;
+		return getMember(fullName);
+	}
+
+	/**
 	 * Add a fuzzy member to this variable.
-	 *
-	 * @param memberName member name
+	 * <p>
+	 * @param member the member
+	 * @return the member
+	 */
+	public Member addMember(Member member) {
+		if (haveMember(member.getName())) {
+			throw new FuzzerException(member.getName() + ": member already exists of variable '" + name + "'");
+		}
+		members.add(member);
+		return member;
+	}
+
+	/**
+	 * Add a fuzzy member to this variable.
+	 * <p>
+	 * @param memberName   member name
 	 * @param functionCall the function call
 	 * @return the member
 	 */
@@ -196,7 +234,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Add a fuzzy member to this variable.
-	 *
+	 * <p>
 	 * @param memberName the member name
 	 * @return the member
 	 */
@@ -206,7 +244,7 @@ public class Variable extends Node implements NameBearer,Comparable {
 
 	/**
 	 * Get the fuzzy member names for this variable.
-	 *
+	 * <p>
 	 * @return the names
 	 */
 	public Collection<Member> members() {
@@ -223,7 +261,6 @@ public class Variable extends Node implements NameBearer,Comparable {
 	public String toString() {
 		return "Variable{" + "name=" + name + '}';
 	}
-
 
 	// ========== EVALUATIONS ================================================
 	/**
