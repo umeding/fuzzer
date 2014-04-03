@@ -24,7 +24,7 @@ public class Member extends Node implements NameBearer {
 	private final List<Double> exploded;
 	private final List<Integer> normalized;
 	//
-	private boolean referenced;
+	private int referenceCount;
 
 	protected Member(String name, FunctionCall functionCall, Hedge hedge) {
 		this.name = name;
@@ -37,7 +37,7 @@ public class Member extends Node implements NameBearer {
 		this.normalized = new ArrayList<>();
 
 		// not referenced to start with
-		this.referenced = false;
+		this.referenceCount = 0;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class Member extends Node implements NameBearer {
 	 * @return the hedged member
 	 */
 	public Member applyHedge(Hedge hedge) {
-		String newMemberName = hedge.getName() + "#" + name;
+		String newMemberName = hedge.getName() + "$" + name;
 		Member member = new Member(newMemberName, functionCall, hedge);
 		this.points.stream().forEach(point -> member.points.add(point));
 		return member;
@@ -140,16 +140,23 @@ public class Member extends Node implements NameBearer {
 	 * @return true/false
 	 */
 	public boolean isReferenced() {
-		return referenced;
+		return referenceCount > 0;
 	}
 
 	/**
-	 * Set the reference indicator.
-	 * <p>
-	 * @param referenced true/false
+	 * Increment the reference counter.
 	 */
-	public void setReferenced(boolean referenced) {
-		this.referenced = referenced;
+	public void incrReferenceCount() {
+		this.referenceCount++;
+	}
+
+	/**
+	 * Get the member reference count.
+	 * <p>
+	 * @return the reference count
+	 */
+	public int getReferenceCount() {
+		return referenceCount;
 	}
 
 	/**

@@ -8,7 +8,7 @@ package com.uwemeding.fuzzer;
  *
  * @author uwe
  */
-public abstract class Expression extends Node {
+public abstract class RuleExpression extends Node {
 
 	/**
 	 * Get the left node of the expression.

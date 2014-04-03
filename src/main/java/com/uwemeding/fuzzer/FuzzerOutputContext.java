@@ -23,10 +23,10 @@ public class FuzzerOutputContext {
 	/**
 	 * Create the output.
 	 *
-	 * @param props the properties
+	 * @param outputdir where to write the output
 	 * @param program the program
 	 */
-	public void create(Properties props, Program program) {
-		types.stream().forEach((type) -> type.createOutput(props, program));
+	public void create(String outputdir, Program program) {
+		types.stream().forEach((type) -> type.createOutput(outputdir, program));
 	}
 }

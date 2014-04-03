@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import com.uwemeding.fuzzer.eval.EvalFactory;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlEngine;
 
@@ -13,7 +12,7 @@ import org.apache.commons.jexl2.JexlEngine;
  */
 public class Range {
 
-	private final static JexlEngine engine = EvalFactory.getInstance();
+	private final static JexlEngine engine = ExpressionEvalFactory.getInstance();
 
 	private final Expression fromExpr;
 	private final Expression toExpr;

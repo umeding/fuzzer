@@ -3,7 +3,7 @@
  */
 package com.uwemeding.fuzzer.java;
 
-import com.uwemeding.fuzzer.Expression;
+import com.uwemeding.fuzzer.RuleExpression;
 import com.uwemeding.fuzzer.FuzzerException;
 import com.uwemeding.fuzzer.FuzzerOutput;
 import com.uwemeding.fuzzer.Member;
@@ -14,8 +14,6 @@ import com.uwemeding.fuzzer.Rule;
 import com.uwemeding.fuzzer.Variable;
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
-import java.util.StringJoiner;
 
 /**
  * The JAVA output strategy.
@@ -31,19 +29,21 @@ public class JavaOutputType implements FuzzerOutput {
 	}
 
 	@Override
-	public void createOutput(Properties props, Program program) {
+	public void createOutput(String output, Program program) {
 		System.out.println("Create a java program");
 		try {
 			nameMap.clear();
-			createProgram(program);
+			createProgram(output, program);
 		} catch (IOException ex) {
 			throw new FuzzerException(ex);
 		}
 	}
 
-	private void createProgram(Program program) throws IOException {
+	private void createProgram(String outputdir, Program program) throws IOException {
 		Java.CLASS clazz = Java.createClass("public", program.getName());
-		clazz.setPackage("com.uwemeding.fuzzer");
+		if (program.getPackageName() != null) {
+			clazz.setPackage(program.getPackageName());
+		}
 
 		Java.METHOD ctor = clazz.addCTOR("public");
 		ctor.setComment("Construct a fuzzy object");
@@ -97,22 +97,26 @@ public class JavaOutputType implements FuzzerOutput {
 		clazz.addC(true, "======== INPUTS =========");
 		program.inputs().forEach(v -> {
 			v.members().forEach(m -> {
-				String varName = v.getName() + "$" + m.getName();
-				String content = createNormalized(m);
-				Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
-				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
+				if (m.isReferenced()) {
+					String varName = v.getName() + "$" + m.getName();
+					String content = createNormalized(m);
+					Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
+					var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
+				}
 			});
 		});
 		clazz.addC(true, "======== OUTPUTS =========");
 		program.outputs().forEach(v -> {
 			v.members().forEach(m -> {
-				String varName = v.getName() + "$" + m.getName();
-				String content = createNormalized(m);
-				Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
-				var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
+				if (m.isReferenced()) {
+					String varName = v.getName() + "$" + m.getName();
+					String content = createNormalized(m);
+					Java.VAR var = clazz.addVAR("private final", "int[]", varName, content);
+					var.setComment("Variable: " + v.getName() + " Member: " + m.getName());
+				}
 			});
 		});
-		Java.setBaseDirectory(new File("./src/test/java"));
+		Java.setBaseDirectory(new File(outputdir));
 		Java.createSource(clazz);
 	}
 
@@ -121,7 +125,7 @@ public class JavaOutputType implements FuzzerOutput {
 		String varName;
 		switch (node.getNodeType()) {
 			case IN:
-				Expression in = node.cast();
+				RuleExpression in = node.cast();
 				Variable var = in.getLeft().cast();
 				Member member = in.getRight().cast();
 				varName = nameMap.map(rule.getName() + "_" + var.getName() + "_in_" + member.getName());
@@ -132,7 +136,7 @@ public class JavaOutputType implements FuzzerOutput {
 
 			case OR:
 			case AND:
-				Expression comb = node.cast();
+				RuleExpression comb = node.cast();
 				String l = addCondition(method, rule, comb.getLeft());
 				String r = addCondition(method, rule, comb.getRight());
 				varName = nameMap.map(rule.getName() + "_" + l + "_" + node.getNodeType() + "_" + r);

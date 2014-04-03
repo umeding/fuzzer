@@ -8,7 +8,7 @@ package com.uwemeding.fuzzer;
  * Evaluate a condition.
  * @author uwe
  */
-public interface ConditionEvaluator {
+public interface RuleConditionEvaluator {
 	
 	/**
 	 * Evaluate a condition.

@@ -483,7 +483,7 @@ Node node;
         member = member.applyHedge(hedge);
         var.addMember(member);
     }
-    member.setReferenced(true);
+    member.incrReferenceCount();
     return Conditions.createInCondition(var, member);
   }
 |
@@ -492,7 +492,7 @@ Node node;
   {
     Variable var = program.getInput(varName);
     Member member = var.getMember(memberName);
-    member.setReferenced(true);
+    member.incrReferenceCount();
     return Conditions.createInCondition(var, member);
   }
 }
@@ -507,6 +507,7 @@ String memberName;
   {
     Variable var = program.getOutput(varName);
     Member member = var.getMember(memberName);
+    member.incrReferenceCount();
     rule.assign(var, member);
   }
 }

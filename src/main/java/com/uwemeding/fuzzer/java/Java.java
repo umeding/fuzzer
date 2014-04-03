@@ -78,7 +78,8 @@ public class Java {
 		}
 		String pkg = clazz.getPackage();
 		if (pkg == null) {
-			throw new IOException("Class package cannot be null");
+			pkg = "";
+//			throw new IOException("Class package cannot be null");
 		}
 		pkg = pkg.replace('.', '/');
 

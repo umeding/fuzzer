@@ -4,14 +4,14 @@
 
 package com.uwemeding.fuzzer.java;
 
-import com.uwemeding.fuzzer.ConditionEvaluator;
+import com.uwemeding.fuzzer.RuleConditionEvaluator;
 import com.uwemeding.fuzzer.Node;
 
 /**
  * Evaluate rule conditions for java.
  * @author uwe
  */
-public class JavaConditionEvaluator implements ConditionEvaluator {
+public class JavaConditionEvaluator implements RuleConditionEvaluator {
 
 	public JavaConditionEvaluator() {
 	}

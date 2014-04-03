@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import com.uwemeding.fuzzer.eval.EvalFactory;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -52,8 +51,8 @@ public class VariableMembersTest {
 		m = v.getMember("N");
 		Integer[] actualN = m.normalized().toArray(new Integer[0]);
 		Integer[] expectedN = {
-			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 229, 204,
-			178, 153, 127, 102, 76, 51, 25, 0, 0, 0, 0, 0, 0, 0,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 230, 204,
+			179, 153, 128, 102, 77, 51, 26, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
 		Assert.assertArrayEquals("Normalized N invalid", expectedN, actualN);
@@ -61,8 +60,8 @@ public class VariableMembersTest {
 		m = v.getMember("Z");
 		Integer[] actualZ = m.normalized().toArray(new Integer[0]);
 		Integer[] expectedZ = {
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 50, 76, 101, 127, 153, 178,
-			204, 229, 255, 229, 204, 178, 153, 127, 101, 76, 50, 25, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 51, 76, 102, 128, 153, 179,
+			204, 230, 255, 230, 204, 179, 153, 128, 102, 76, 51, 25, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
 		Assert.assertArrayEquals("Normalized Z invalid", expectedZ, actualZ);
@@ -124,7 +123,7 @@ public class VariableMembersTest {
 		dumpNormalized(nb, ns, z, ps, pb);
 
 		// apply hedge
-		JexlEngine engine = EvalFactory.getInstance();
+		JexlEngine engine = ExpressionEvalFactory.getInstance();
 		Expression expr = engine.createExpression("x^2");
 
 		JexlContext context = new MapContext();

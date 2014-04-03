@@ -23,7 +23,7 @@ public class Rule {
 	private final Map<Variable, Member> assignments;
 
 	public Rule(String name, Node condition) {
-		Conditions.checkNode(condition, IN, AND, OR);
+		RuleConditions.checkNode(condition, IN, AND, OR);
 		this.name = name;
 		this.condition = condition;
 		this.assignments = new TreeMap<>();
@@ -75,6 +75,15 @@ public class Rule {
 	 */
 	public Collection<Variable> assignmentVariables() {
 		return assignments.keySet();
+	}
+
+	/**
+	 * Get the assigned members;
+	 * <p>
+	 * @return the assigned members;
+	 */
+	public Collection<Member> assignmentMembers() {
+		return assignments.values();
 	}
 
 	/**

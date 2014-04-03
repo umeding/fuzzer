@@ -3,7 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import com.uwemeding.fuzzer.eval.EvalFactory;
 import java.util.ArrayList;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
@@ -45,7 +44,7 @@ public class JEXLTest {
 	// Test the power calculation extension
 	@Test
 	public void testPower() {
-		JexlEngine engine = EvalFactory.getInstance();
+		JexlEngine engine = ExpressionEvalFactory.getInstance();
 		Expression expr = engine.createExpression("X^2");
 
 		JexlContext context = new MapContext();

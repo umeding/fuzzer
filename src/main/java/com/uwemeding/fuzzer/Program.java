@@ -31,6 +31,7 @@ public class Program {
 
 	private final Map<String, Rule> rules;
 
+	private String packageName;
 	private ReasoningStrategy reasoningStrategy;
 	private Number epsilon; // values less are considered 0
 
@@ -74,6 +75,24 @@ public class Program {
 	 */
 	public void setReasoningStrategy(ReasoningStrategy reasoningStrategy) {
 		this.reasoningStrategy = reasoningStrategy;
+	}
+
+	/**
+	 * Get the package name.
+	 * <p>
+	 * @return the package name
+	 */
+	public String getPackageName() {
+		return packageName;
+	}
+
+	/**
+	 * Set the package name.
+	 * <p>
+	 * @param packageName the package name
+	 */
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
 	}
 
 	/**
@@ -215,7 +234,7 @@ public class Program {
 	/**
 	 * Add an external function.
 	 * <p>
-	 * @param name function name
+	 * @param name         function name
 	 * @param argumentName the argument name
 	 * @return the function
 	 */

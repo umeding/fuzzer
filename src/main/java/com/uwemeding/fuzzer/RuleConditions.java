@@ -14,7 +14,7 @@ import java.util.StringJoiner;
  * <p>
  * @author uwe
  */
-public class Conditions {
+public class RuleConditions {
 
 	/**
 	 * Create an "IN" condition.
@@ -91,7 +91,7 @@ public class Conditions {
 		throw new FuzzerException(nodeName + ": invalid, must be one of " + sj.toString());
 	}
 
-	private static class Condition extends Expression {
+	private static class Condition extends RuleExpression {
 
 		private final Node.Type nodeType;
 		private final Node left;

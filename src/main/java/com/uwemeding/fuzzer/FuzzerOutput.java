@@ -3,8 +3,6 @@
  */
 package com.uwemeding.fuzzer;
 
-import java.util.Properties;
-
 /**
  * Manage the output.
  *
@@ -16,9 +14,9 @@ public interface FuzzerOutput {
 	/**
 	 * Create an output for a program.
 	 *
-	 * @param props the properties
+	 * @param output where to create the output
 	 * @param program the program
 	 */
-	void createOutput(Properties props, Program program);
+	void createOutput(String output, Program program);
 
 }

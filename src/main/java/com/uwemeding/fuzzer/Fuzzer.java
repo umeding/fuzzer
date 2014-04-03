@@ -3,6 +3,10 @@
  */
 package com.uwemeding.fuzzer;
 
+import com.uwemeding.fuzzer.java.JavaOutputType;
+import com.uwemeding.fuzzer.parser.FuzzerParser;
+import java.io.FileInputStream;
+
 /**
  * Main program.
  * <p>
@@ -40,16 +44,44 @@ public class Fuzzer {
 
 	private void execute(String... av) throws Exception {
 
+		String outputdir = "./";
+		String packageName = null;
+		boolean packageNameDefined = false;
 		for (GetOpt.Option opt : options.parseOptions(av)) {
 			switch (opt.getLongName()) {
+
 				case "help":
 					printHelp();
 					return;
+
+				case "outputdir":
+					outputdir = opt.getValue();
+					break;
+
+				case "package":
+					packageName = opt.getValue();
+					packageNameDefined = true;
+					break;
 			}
 
 		}
+		// now loop through the input files
 		for (int i = options.getOptind(); i < av.length; i++) {
-			System.out.println("--> " + av[i]);
+			FuzzerParser parser = new FuzzerParser();
+			FuzzerOutputContext context = new FuzzerOutputContext(new JavaOutputType());
+
+			try (FileInputStream fp = new FileInputStream(av[i])) {
+				Program program = parser.parse(fp);
+				if (packageNameDefined) {
+					program.setPackageName(packageName);
+				}
+
+				// compile the program
+				ProgramEvaluator eval = new ProgramEvaluator(program);
+				eval.compileProgram();
+
+				context.create(outputdir, program);
+			}
 		}
 		System.out.println("--> done");
 	}

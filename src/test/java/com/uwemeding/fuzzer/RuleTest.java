@@ -44,9 +44,9 @@ public class RuleTest {
 		Variable v2 = new Variable("b", -20, 20, 1);
 		Member n2 = v2.addMember("Z").add(-20, 1).add(-10, 1).add(0, 0);
 
-		Node cond1 = Conditions.createInCondition(v1, n1);
-		Node cond2 = Conditions.createInCondition(v2, n2);
-		Node and = Conditions.createAndCondition(cond1, cond2);
+		Node cond1 = RuleConditions.createInCondition(v1, n1);
+		Node cond2 = RuleConditions.createInCondition(v2, n2);
+		Node and = RuleConditions.createAndCondition(cond1, cond2);
 
 		JavaConditionEvaluator eval = new JavaConditionEvaluator();
 		Node result = eval.evaluate(and);

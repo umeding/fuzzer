@@ -7,7 +7,7 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>fuzzer Fuzzy Logic Tool</name>
+	<name>fuzzer (Fuzzy Logic Tool)</name>
 	<url>http://www.uwemeding.com</url>
 
 	<properties>
@@ -27,15 +27,21 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-	 <dependency>
-	  <groupId>org.apache.commons</groupId>
-	  <artifactId>commons-jexl</artifactId>
-	  <version>2.1.1</version>
-	 </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- compile the fuzzer syntax -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
@@ -60,5 +66,41 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Create the standalone version for easy deployment -->
+	<profiles>
+		<profile>
+			<id>standalone</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/all.xml</descriptor>
+							</descriptors>
+							<archive>
+								<manifest>
+									<mainClass>com.uwemeding.fuzzer.Fuzzer</mainClass>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 
 </project>

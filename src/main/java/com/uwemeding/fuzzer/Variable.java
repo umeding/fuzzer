@@ -186,7 +186,7 @@ public class Variable extends Node implements NameBearer, Comparable {
 	 * @return true/false
 	 */
 	public boolean haveMember(String hedgeName, String memberName) {
-		String fullName = hedgeName + "#" + memberName;
+		String fullName = hedgeName + "$" + memberName;
 		return haveMember(fullName);
 	}
 
@@ -198,7 +198,7 @@ public class Variable extends Node implements NameBearer, Comparable {
 	 * @return the member
 	 */
 	public Member getMember(String hedgeName, String memberName) {
-		String fullName = hedgeName + "#" + memberName;
+		String fullName = hedgeName + "$" + memberName;
 		return getMember(fullName);
 	}
 
