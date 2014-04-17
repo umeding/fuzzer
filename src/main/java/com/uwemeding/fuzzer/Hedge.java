@@ -3,6 +3,10 @@
  */
 package com.uwemeding.fuzzer;
 
+import org.apache.commons.jexl2.Expression;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.MapContext;
+
 /**
  * Hedge functionality.
  * <p>
@@ -12,7 +16,8 @@ public class Hedge implements NameBearer {
 
 	private final String name;
 	private String arg;
-	private String expression;
+	private String expressionString;
+	private Expression expression;
 
 	public Hedge(String name) {
 		this.name = name;
@@ -23,10 +28,11 @@ public class Hedge implements NameBearer {
 		this.arg = arg;
 	}
 
-	public Hedge(String name, String arg, String expression) {
+	public Hedge(String name, String arg, String expressionString) {
 		this(name);
 		this.arg = arg;
-		this.expression = expression;
+		this.expressionString = expressionString;
+		this.expression = ExpressionEvalFactory.getInstance().createExpression(expressionString);
 	}
 
 	@Override
@@ -42,12 +48,29 @@ public class Hedge implements NameBearer {
 		this.arg = arg;
 	}
 
-	public String getExpression() {
+	public String getExpressionString() {
+		return expressionString;
+	}
+
+	public void setExpressionString(String expression) {
+		this.expressionString = expression;
+		this.expression = ExpressionEvalFactory.getInstance().createExpression(expressionString);
+	}
+
+	public Expression getExpression() {
 		return expression;
 	}
 
-	public void setExpression(String expression) {
-		this.expression = expression;
+	/**
+	 * Calculate a hedged value.
+	 * <p>
+	 * @param value is the value
+	 * @return the hedged value
+	 */
+	public double calculateValue(double value) {
+		JexlContext context = new MapContext();
+		context.set(getArg(), value);
+		return (double) expression.evaluate(context);
 	}
 
 	@Override

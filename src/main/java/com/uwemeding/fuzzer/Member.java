@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.MapContext;
 
 /**
  * Fuzzy range members.
@@ -294,6 +296,11 @@ public class Member extends Node implements NameBearer {
 				double b = p1.getY().doubleValue() - m * p1.getX().doubleValue();
 
 				double interpolated = m * x + b;
+
+				// apply the hedge if we have one
+				if(haveHedge()) {
+					interpolated = getHedge().calculateValue(interpolated);
+				}
 				exploded.add(interpolated);
 				return;
 			}

@@ -426,7 +426,7 @@ Node right;
   (
     "or" right=FuzzyAndCondition(program)
     {
-      left=Conditions.createOrCondition(left, right);
+      left=RuleConditions.createOrCondition(left, right);
     }
   )*
   {
@@ -447,7 +447,7 @@ Node right;
   (
     "and" right=FuzzyInSetCondition(program)
     {
-      left=Conditions.createAndCondition(left, right);
+      left=RuleConditions.createAndCondition(left, right);
     }
   )*
   {
@@ -484,7 +484,7 @@ Node node;
         var.addMember(member);
     }
     member.incrReferenceCount();
-    return Conditions.createInCondition(var, member);
+    return RuleConditions.createInCondition(var, member);
   }
 |
   LOOKAHEAD(3)
@@ -493,7 +493,7 @@ Node node;
     Variable var = program.getInput(varName);
     Member member = var.getMember(memberName);
     member.incrReferenceCount();
-    return Conditions.createInCondition(var, member);
+    return RuleConditions.createInCondition(var, member);
   }
 }
 

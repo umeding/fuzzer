@@ -30,7 +30,6 @@ public class JavaOutputType implements FuzzerOutput {
 
 	@Override
 	public void createOutput(String output, Program program) {
-		System.out.println("Create a java program");
 		try {
 			nameMap.clear();
 			createProgram(output, program);

@@ -273,7 +273,6 @@ public class Variable extends Node implements NameBearer, Comparable {
 
 		// enumerate the variable range
 		members().forEach(member -> {
-			System.out.println("Member " + member.getName());
 			if (member.haveFunctionCall()) {
 				for (double i = start; i <= stop; i += step) {
 					member.calculateFunctionAt(i);

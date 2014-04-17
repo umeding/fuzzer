@@ -410,7 +410,7 @@ public class Program {
 
 		Set<String> names = new TreeSet<>(hedges.keySet());
 		names.forEach(name
-				-> fp.format(FMT, name, "<hedge>", hedges.get(name).getExpression())
+				-> fp.format(FMT, name, "<hedge>", hedges.get(name).getExpressionString())
 		);
 
 		names = new TreeSet<>(functions.keySet());
