@@ -6,7 +6,7 @@ Fuzzer
 Sections
 --------
 
-* [Fuzzer Syntax and Semantics](https://github.com/umeding/fuzzer/doc/sections/syntax.md)
+* [Fuzzer Syntax and Semantics](https://github.com/umeding/fuzzer/blob/master/doc/sections/syntax.md)
 
 * Introduction
 * Installation
