@@ -3,7 +3,7 @@ Syntax
 
 <a name="top"></a>Content
 -------
-* [Back to Overview](https://github.com/umeding/fuzzer/blob/master/doc/README.md)
+* [Back to Overview](https://github.com/umeding/fuzzer/blob/master/README.md)
 * [Example](#example)
 * [Identifiers](#identifiers)
 
@@ -34,7 +34,7 @@ return
 * Multi line comments begin with the token `/*` and end with the
 token `*/`
 
-### <a name="identifiers"></a>Identifiers ([^Top](#top)) ###
+### <a name="identifiers"></a>Identifiers (<small>[^Top](#top)</small>) ###
 Identifiers are names used to give an object, such as a hedge or a
 function or a rule, a name so that it can be referenced from other
 places in a description.
