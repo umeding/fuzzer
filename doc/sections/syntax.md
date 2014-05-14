@@ -1,12 +1,17 @@
 Syntax
 ======
 
-**Lexical Conventions**
+Content
+-------
+[Example][]
+[Identifiers][]
+
+### Lexical Conventions ###
 The basic lexical conventions used by Fuzzer are similar to those in
 the Java or C programming language. Fuzzer is a case-sensitive
 language. All keywords are in lowercase.
 
-**Whitespace**
+### Whitespace ###
 White space can contain the characters for blanks, tabs, newlines, and
 form feeds. These characters are ignored except when they serve to
 separate other tokens. However, blanks and tabs are significant in
@@ -20,7 +25,7 @@ White space characters are :
 * New-line
 * Form-feeds
 
-**Comments**
+### Comments ###
 There are two forms to introduce comments.
 
 * Single line comments begin with the token `//` and end with a carriage
@@ -28,7 +33,18 @@ return
 * Multi line comments begin with the token `/*` and end with the
 token `*/`
 
-**Example:**
+### Identifiers ###
+Identifiers are names used to give an object, such as a hedge or a
+function or a rule, a name so that it can be referenced from other
+places in a description.
+
+* Identifiers must begin with an alphabetic character or the
+underscore character (`a-z A-Z _ `)
+* Identifiers may contain alphabetic characters, numeric characters,
+the underscore, and the dollar sign (`a-z A-Z 0-9 _ $`)
+
+
+### Example ###
 
 ```
 /*
@@ -48,15 +64,3 @@ program Simple {
     }
 }
 ```
-
-**Identifiers**
-Identifiers are names used to give an object, such as a hedge or a
-function or a rule, a name so that it can be referenced from other
-places in a description.
-
-* Identifiers must begin with an alphabetic character or the
-underscore character (`a-z A-Z _ `)
-* Identifiers may contain alphabetic characters, numeric characters,
-the underscore, and the dollar sign (`a-z A-Z 0-9 _ $`)
-
-
