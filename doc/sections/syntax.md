@@ -3,8 +3,8 @@ Syntax
 
 Content
 -------
-* [Example][]
-* [Identifiers][]
+* [Example](#example)
+* [Identifiers](#identifiers)
 
 ### Lexical Conventions ###
 The basic lexical conventions used by Fuzzer are similar to those in
@@ -33,7 +33,7 @@ return
 * Multi line comments begin with the token `/*` and end with the
 token `*/`
 
-### Identifiers ###
+### <a name="identifiers"></a>Identifiers ###
 Identifiers are names used to give an object, such as a hedge or a
 function or a rule, a name so that it can be referenced from other
 places in a description.
@@ -44,7 +44,7 @@ underscore character (`a-z A-Z _ `)
 the underscore, and the dollar sign (`a-z A-Z 0-9 _ $`)
 
 
-### Example ###
+### <a name="example"></a>Example ###
 
 ```
 /*
