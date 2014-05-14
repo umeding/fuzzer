@@ -3,8 +3,8 @@ Syntax
 
 Content
 -------
-[Example][]
-[Identifiers][]
+* [Example][]
+* [Identifiers][]
 
 ### Lexical Conventions ###
 The basic lexical conventions used by Fuzzer are similar to those in
