@@ -12,7 +12,7 @@ The basic lexical conventions used by Fuzzer are similar to those in
 the Java or C programming language. Fuzzer is a case-sensitive
 language. All keywords are in lowercase.
 
-### Whitespace ###
+### Whitespace
 White space can contain the characters for blanks, tabs, newlines, and
 form feeds. These characters are ignored except when they serve to
 separate other tokens. However, blanks and tabs are significant in
@@ -26,7 +26,7 @@ White space characters are :
 * New-line
 * Form-feeds
 
-### Comments ###
+### Comments
 There are two forms to introduce comments.
 
 * Single line comments begin with the token `//` and end with a carriage
@@ -34,7 +34,7 @@ return
 * Multi line comments begin with the token `/*` and end with the
 token `*/`
 
-### <a name="identifiers"></a>Identifiers (<small>[^Top](#top)</small>) ###
+### <a name="identifiers"></a>Identifiers (<small>[^Top](#top)</small>)
 Identifiers are names used to give an object, such as a hedge or a
 function or a rule, a name so that it can be referenced from other
 places in a description.
@@ -56,7 +56,7 @@ signed and unsigned numbers are supported. In general, number handling
 is fairly relaxed and are mostly used in their real representation
 internally. 
 
-### Example ###
+__Example__
 
 ```
 /*
@@ -77,22 +77,25 @@ program Simple {
 }
 ```
 
-## <a name="program"></a>Program ##
+## <a name="program"></a>Program (<small>[^Top](#top)</small>)
 A `program` is the main building block in a Fuzzer description.
 Programs wrap all the the fuzzy logic descriptions for the desired
 functionalities. One program per file is expected.
 
-### Hedges ###
+### Hedges
 Hedges
+[Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
 
-### Functions ### 
+### Functions
 Functions
+[Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
 * Piecewise
 * External
 
-### Inputs/Outputs ###
+### Inputs/Outputs
 * Range, Step
-#### Example ####
+
+__Example__
 ```
 output veloc(-5 .. 5 step 0.1) {
     nb = {-5,1} {-2,1} {-1,0};
@@ -101,15 +104,16 @@ output veloc(-5 .. 5 step 0.1) {
 }
 ```
 
-### Reasoning ###
+### Reasoning
 * Max/min
 * Max/Dot
 
-### Rules ###
+### Rules
 * Input references
 * Conjunction (`and`)
 * Disjunction (`or`)`
-#### Examples ####
+
+__Examples__
 ```
 rule r1(theta is very nb) {
     veloc = nb;
