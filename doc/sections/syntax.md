@@ -4,10 +4,10 @@ Syntax
 <a name="top"></a>Content
 -------
 * [Back to Overview](https://github.com/umeding/fuzzer/blob/master/README.md)
-* [Example](#example)
-* [Identifiers](#identifiers)
+* [Lexical Conventions](#lexical)
+* [Program](#program)
 
-### Lexical Conventions ###
+## <a name="lexical"></a>Lexical Conventions ##
 The basic lexical conventions used by Fuzzer are similar to those in
 the Java or C programming language. Fuzzer is a case-sensitive
 language. All keywords are in lowercase.
@@ -44,8 +44,19 @@ underscore character (`a-z A-Z _ `)
 * Identifiers may contain alphabetic characters, numeric characters,
 the underscore, and the dollar sign (`a-z A-Z 0-9 _ $`)
 
+### Case sensitivity
+Fuzzer programs are case-sensitve.
 
-### <a name="example"></a>Example ###
+* All lower case letters are unique from upper case letters
+* All Fuzzer keywords are lower case
+
+### Numbers in Fuzzer
+You can specify constant numbers in integer or real formats. Both
+signed and unsigned numbers are supported. In general, number handling
+is fairly relaxed and are mostly used in their real representation
+internally. 
+
+### Example ###
 
 ```
 /*
@@ -65,3 +76,43 @@ program Simple {
     }
 }
 ```
+
+## <a name="program"></a>Program ##
+A `program` is the main building block in a Fuzzer description.
+Programs wrap all the the fuzzy logic descriptions for the desired
+functionalities. One program per file is expected.
+
+### Hedges ###
+Hedges
+
+### Functions ### 
+Functions
+* Piecewise
+* External
+
+### Inputs/Outputs ###
+* Range, Step
+#### Example ####
+```
+output veloc(-5 .. 5 step 0.1) {
+    nb = {-5,1} {-2,1} {-1,0};
+    z = {-2,1} {0,1} {1,0};
+    pb = S[1,3,5](x);
+}
+```
+
+### Reasoning ###
+* Max/min
+* Max/Dot
+
+### Rules ###
+* Input references
+* Conjunction (`and`)
+* Disjunction (`or`)`
+#### Examples ####
+```
+rule r1(theta is very nb) {
+    veloc = nb;
+}
+```
+
