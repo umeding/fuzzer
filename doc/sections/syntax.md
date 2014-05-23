@@ -95,7 +95,7 @@ __Example__
 ```
 In the above example, there are two linguistic hedges: `very` which
 concentrates, whereas `slightly` dialates the degree of membership.
-![Degree of membership](https://github.com/umeding/fuzzer/blob/master/doc/sections/hedges.png "Degree of membership")
+![Degree of membership](https://github.com/umeding/fuzzer/raw/master/doc/sections/hedges.png "Degree of membership")
 ### Functions
 Functions
 [Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
