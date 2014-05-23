@@ -83,9 +83,19 @@ Programs wrap all the the fuzzy logic descriptions for the desired
 functionalities. One program per file is expected.
 
 ### Hedges
-Hedges
+Linguistic hedges are operators that can be applied to the primary input
+variables of a Fuzzer program. They allow to control the degree to
+which a variable belongs to a member set.
 [Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
 
+__Example__
+```
+    hedge very(x) -> x^2;
+    hedge slightly(x) -> (x^1.2) && (1.0-(x^2.0));
+```
+In the above example, there are two linguistic hedges: `very` which
+concentrates, whereas `slightly` dialates the degree of membership.
+![Degree of membership](https://github.com/umeding/fuzzer/blob/master/doc/sections/hedges.png "Degree of membership")
 ### Functions
 Functions
 [Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
