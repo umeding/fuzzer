@@ -1,3 +1,4 @@
+# GNUPLOT Script: gnuplot -e "load 'hedges.gp'"
 set terminal pngcairo  enhanced font "arial,10" fontscale 1.0 size 512,280
 set output 'hedges.png'
 #set clip two
