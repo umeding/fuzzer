@@ -93,9 +93,9 @@ __Example__
     hedge very(x) -> x^2;
     hedge slightly(x) -> (x^1.2) && (1.0-(x^2.0));
 ```
+![Degree of membership](https://github.com/umeding/fuzzer/raw/master/doc/sections/hedges.png "Degree of membership")
 In the above example, there are two linguistic hedges: `very` which
 concentrates, whereas `slightly` dialates the degree of membership.
-![Degree of membership](https://github.com/umeding/fuzzer/raw/master/doc/sections/hedges.png "Degree of membership")
 ### Functions
 Functions
 [Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
