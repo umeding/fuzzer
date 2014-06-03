@@ -5,6 +5,8 @@ Syntax
 -------
 * [Back to Overview](https://github.com/umeding/fuzzer/blob/master/README.md)
 * [Lexical Conventions](#lexical)
+* [Functions](#functions)
+* [Inputs/Outputs](#ios)
 * [Program](#program)
 
 ## <a name="lexical"></a>Lexical Conventions ##
@@ -83,10 +85,11 @@ Programs wrap all the the fuzzy logic descriptions for the desired
 functionalities. One program per file is expected.
 
 ### Hedges
-Linguistic hedges are operators that can be applied to the primary input
-variables of a Fuzzer program. They allow to control the degree to
-which a variable belongs to a member set.
-[Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
+Linguistic hedges are operators that can be applied to the primary
+input variables of a Fuzzer program. They allow to control the degree
+to which a variable belongs to a member set. The expression syntax can
+be found here: 
+[Apache JEXL reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
 
 __Example__
 ```
@@ -96,13 +99,28 @@ __Example__
 ![Degree of membership](https://github.com/umeding/fuzzer/raw/master/doc/sections/hedges.png "Degree of membership")
 In the above example, there are two linguistic hedges: `very` which
 concentrates, whereas `slightly` dialates the degree of membership.
-### Functions
-Functions
-[Expression syntax reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
-* Piecewise
-* External
 
-### Inputs/Outputs
+### <a name="functions"></a>Functions (<small>[^Top](#top)</small>)
+#### Piecewise Functions
+Functions can be defined to describe custom membership shapes for
+the input/output variables. 
+__Example__
+```
+function S(x) piecewise A,B,C {
+      .. A -> 0;
+    A .. B -> 2*((x-A)/(C-A))^2;
+    B .. C -> 1-2*((x-A)/(C-A))^2;
+    C ..   -> 1;
+}
+```
+The above example defines an "S" style transition. The parameters
+`A, B, C` are used to describe the shape of the transition. The
+expression syntax can be found here: 
+[Apache JEXL reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
+
+#### External Functions
+
+### <a name="ios"></a>Inputs/Outputs (<small>[^Top](#top)</small>)
 * Range, Step
 
 __Example__
