@@ -155,13 +155,18 @@ output veloc(-5 .. 5 step 0.1) {
 ```
 
 ### Reasoning
-* Max/min
-* Max/Dot
+Fuzzer supports the following reasoning methods:
+* __Max-min__ inference method means that the minimum value of the
+  antecedents is taken: 
+> &#181;A AND &#181;B = min { &#181;A, &#181;B }
+* __Max-Dot__ (also max-product) inference method means that the
+  product of the antecedents is taken:
+> &#181;A AND &#181;B = &#181;A * &#181;B
 
 ### Rules
 * Input references
 * Conjunction (`and`)
-* Disjunction (`or`)`
+* Disjunction (`or`)
 
 __Examples__
 ```
