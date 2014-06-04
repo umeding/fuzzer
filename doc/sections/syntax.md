@@ -159,14 +159,10 @@ output veloc(-5 .. 5 step 0.1) {
 ### Reasoning
 Fuzzer supports the following reasoning methods:
 #### Max-min inference method
-takes the minimum value of the antecedents: 
-
-      &#181;A AND &#181;B = min { &#181;A, &#181;B }
+takes the minimum value of the antecedents: &#181;A AND &#181;B = min { &#181;A, &#181;B }
 
 #### Max-Dot (also max-product) inference
-takes the product of the antecedents:
-
-      &#181;A AND &#181;B = &#181;A * &#181;B.
+takes the product of the antecedents: &#181;A AND &#181;B = &#181;A * &#181;B.
       
 __Note:__ This is also the default if nothing is specified.
 
