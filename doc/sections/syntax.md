@@ -105,6 +105,7 @@ concentrates, whereas `slightly` dialates the degree of membership.
 #### Piecewise Functions
 Piecewise functions can be defined to describe custom membership shapes for
 the input/output variables. 
+
 __Example__
 ```
 function S(x) piecewise A,B,C {
@@ -121,6 +122,7 @@ expression syntax can be found here:
 
 #### External Functions
 External functions refer to (single value) methods in Java. 
+
 __Example__
 ```
 function triangle(x) external com.example.FuzzyShapes.triangle(x);
@@ -156,18 +158,18 @@ output veloc(-5 .. 5 step 0.1) {
 
 ### Reasoning
 Fuzzer supports the following reasoning methods:
-<dl>
-  <dt>Max-min inference method</dt>
-  <dd>takes the minimum value of the antecedents: 
-      &#181;A AND &#181;B = min { &#181;A, &#181;B }
-  </dd>
+#### Max-min inference method
+takes the minimum value of the antecedents: 
 
-  <dt>Max-Dot (also max-product) inference</dt>
-  <dd>takes the product of the antecedents:
-      &#181;A AND &#181;B = &#181;A * &#181;B. This is also the
-      default if nothing is specified.
-  </dd>
-</dl>
+      &#181;A AND &#181;B = min { &#181;A, &#181;B }
+
+#### Max-Dot (also max-product) inference
+takes the product of the antecedents:
+
+      &#181;A AND &#181;B = &#181;A * &#181;B.
+      
+__Note:__ This is also the default if nothing is specified.
+
 __Example__
 ```
 reasoning max-dot;
