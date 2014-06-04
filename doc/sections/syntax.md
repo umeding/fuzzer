@@ -7,7 +7,8 @@ Syntax
 * [Lexical Conventions](#lexical)
 * [Functions](#functions)
 * [Inputs/Outputs](#ios)
-* [Program](#program)
+* [Reasoning](#reasoning)
+* [Rules](#rules)
 
 ## <a name="lexical"></a>Lexical Conventions ##
 The basic lexical conventions used by Fuzzer are similar to those in
@@ -156,7 +157,7 @@ output veloc(-5 .. 5 step 0.1) {
 }
 ```
 
-### Reasoning
+### <a name="reasoning"></a>Reasoning (<small>[^Top](#top)</small>)
 Fuzzer supports the following reasoning methods:
 #### Max-min inference method
 takes the minimum value of the antecedents: &#181;A AND &#181;B = min { &#181;A, &#181;B }
@@ -171,7 +172,7 @@ __Example__
 reasoning max-dot;
 ```
 
-### Rules
+### <a name="rules"></a>Rules (<small>[^Top](#top)</small>)
 * Input references
 * Conjunction (`and`)
 * Disjunction (`or`)
