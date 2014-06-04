@@ -97,12 +97,13 @@ __Example__
     hedge slightly(x) -> (x^1.2) && (1.0-(x^2.0));
 ```
 ![Degree of membership](https://github.com/umeding/fuzzer/raw/master/doc/sections/hedges.png "Degree of membership")
+
 In the above example, there are two linguistic hedges: `very` which
 concentrates, whereas `slightly` dialates the degree of membership.
 
 ### <a name="functions"></a>Functions (<small>[^Top](#top)</small>)
 #### Piecewise Functions
-Functions can be defined to describe custom membership shapes for
+Piecewise functions can be defined to describe custom membership shapes for
 the input/output variables. 
 __Example__
 ```
@@ -119,6 +120,27 @@ expression syntax can be found here:
 [Apache JEXL reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
 
 #### External Functions
+External functions refer to (single value) methods in Java. 
+__Example__
+```
+function triangle(x) external com.example.FuzzyShapes.triangle(x);
+```
+The above example defines a reference to a triangular shape
+transition. The corresponding Java code would look like this:
+```java
+package com.example;
+public class FuzzyShapes {
+    /**
+     * Triangular shape transition.
+     * @param x  input value
+     * @return   value with respect to a triangle
+     */
+    public static double triangle(double x) {
+        // implementation
+    }
+}
+```
+
 
 ### <a name="ios"></a>Inputs/Outputs (<small>[^Top](#top)</small>)
 * Range, Step
