@@ -164,9 +164,14 @@ Fuzzer supports the following reasoning methods:
 
   <dt>Max-Dot (also max-product) inference</dt>
   <dd>takes the product of the antecedents:
-      &#181;A AND &#181;B = &#181;A * &#181;B
+      &#181;A AND &#181;B = &#181;A * &#181;B. This is also the
+      default if nothing is specified.
   </dd>
 </dl>
+__Example__
+```
+reasoning max-dot;
+```
 
 ### Rules
 * Input references
