@@ -1,9 +1,8 @@
-Syntax
-======
-
+>#Syntax
 <a name="top"></a>Content
 -------
 * [Back to Overview](https://github.com/umeding/fuzzer/blob/master/README.md)
+* [BNF](https://github.com/umeding/fuzzer/blob/master/doc/sections/bnf.md)
 * [Lexical Conventions](#lexical)
 * [Functions](#functions)
 * [Inputs/Outputs](#ios)
