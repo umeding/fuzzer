@@ -166,6 +166,8 @@ takes the product of the antecedents: &#181;A AND &#181;B = &#181;A * &#181;B.
       
 __Note:__ This is also the default if nothing is specified.
 
+![Reasoning](https://github.com/umeding/fuzzer/raw/master/doc/sections/defuzzification.png "Reasoning")
+
 __Example__
 ```
 reasoning max-dot;
