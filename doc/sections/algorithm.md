@@ -2,19 +2,21 @@
 
 
 ```
-while (not all rules evaluated)
+function evaluate() 
 do
-  find the fire strength for each rule;
-  compute the area size of the inferred control action for each rule;
-end
-
-while (not all output variables done) 
-  union the inferred areas for current output variable;
-  compute the moment of this area;
-  compute the crisp output using COA defuzzification method;
-do
-
-return crisp output variables;
+  while (not all rules evaluated)
+  do
+    find the fire strength for each rule;
+    compute the area size of the inferred control action for each rule;
+  end
+  
+  while (not all output variables done) 
+    union the inferred areas for current output variable;
+    compute the moment of this area;
+    compute the crisp output using COA defuzzification method;
+  do
+  
+  return crisp output variables;
 end
 ```
 
