@@ -1,6 +1,10 @@
->#Fuzzer Core Algorithm
+>#Fuzzer Implementation
+
+####**High-level objects and relationships**
+![High-level](https://github.com/umeding/fuzzer/raw/master/doc/sections/high-level.png "High-level")
 
 
+####**Fuzzer Core Algorithm**
 ```
 function evaluate() 
 do
@@ -21,7 +25,10 @@ end
 ```
 
 ####**Center of area (COA) method**
-The COA strategy generates the center of gravity of the possibility
+The COA aka "centroid" strategy generates the center of gravity of the possibility
 distribution of a control action. It is widely used in the
 implementation of fuzzy logic systems.
-
+```
+moment = mass × distance from a point
+     y = total moments / total area
+```
