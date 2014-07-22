@@ -1,7 +1,7 @@
 >#Fuzzer Implementation
 
 ####**High-level objects and relationships**
-![High-level](https://github.com/umeding/fuzzer/raw/master/doc/sections/high-level.png "High-level")
+![High-level](https://github.com/umeding/fuzzer/raw/master/doc/sections/highlevel-objects.png "High-level")
 
 
 ####**Fuzzer Core Algorithm**
