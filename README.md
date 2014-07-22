@@ -1,12 +1,15 @@
 fuzzer
 ======
 
-Fuzzer
+Simple Fuzzy Logic Tool for Java 8.
 
 Sections
 --------
 
-* [Fuzzer Syntax and Semantics](https://github.com/umeding/fuzzer/blob/master/doc/sections/syntax.md)
+* [Syntax and Semantics](https://github.com/umeding/fuzzer/blob/master/doc/sections/syntax.md)
+* [Implementation Details](https://github.com/umeding/fuzzer/blob/master/doc/sections/algorithm.md)
+
+* [Licensing](https://github.com/umeding/fuzzer/blob/master/LICENSE)
 
 * Introduction
 * Installation
@@ -15,4 +18,3 @@ Sections
 * Implementation ? (Example perhaps)
 * Testing ?
 * Related Resources
-* Licencing
