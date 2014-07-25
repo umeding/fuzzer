@@ -1,12 +1,11 @@
-Fuzzer
-======
+>#Fuzzer
 
 Simple Fuzzy Logic Tool for Java 8.
 
 ## Documentation
 * [Syntax and Semantics](https://github.com/umeding/fuzzer/blob/master/doc/sections/syntax.md)
 * [Implementation Details](https://github.com/umeding/fuzzer/blob/master/doc/sections/algorithm.md)
-* [To do](https://github.com/umeding/fuzzer/blob/master/TODO.md)
+* [To Do](https://github.com/umeding/fuzzer/blob/master/TODO.md)
 * [Licensing](https://github.com/umeding/fuzzer/blob/master/LICENSE)
 
 ### Getting started, the simple way
@@ -29,7 +28,7 @@ Fuzzer is fully written in Java 8+ and its project is fully managed by
 In order to install and use Fuzzer, download the source code by cloning it via your Git client:
 
 ```bash
-git clone git@github.com:umeding/fuzzer.git
+$ git clone git@github.com:umeding/fuzzer.git
 ```
 
 Fuzzer uses [Maven](http://maven.apache.org "Maven") to manage the
@@ -37,28 +36,28 @@ project, therefore your need to compile the Java source file and
 generate the Fuzzer `.jar` archive by typing the following commands:
 
 ```bash
-cd $FUZZER_DIR
-mvn clean package -Pstandalone
+$ cd $FUZZER_DIR
+$ mvn clean package -Pstandalone
 ```
+
+### Development/debugging
+You should be able to use a modern IDE to compile and debug Fuzzer.
+The latest versions of Netbeans, and IntelliJ work without issues.
+Eclipse should work as well, but I have not tested it, YMMV.
+
 
 ### How to use it
 
 You simply need to create a fuzzy rules file and start of the program:
 
 ```bash
-java -jar $FUZZER_DIR/target/fuzzer-XXXXX-all.jar SomeRules.fpl
+$ java -jar $FUZZER_DIR/target/fuzzer-XXXXX-all.jar SomeRules.fpl
 ```
 
 ### Generated files
 
 At the end of the execution of the Java application, Fuzzer will
 generate Java source file(s) implementing the fuzzy rules.
-
-
-### Development/debugging
-You should be able to use a modern IDE to compile and debug Fuzzer.
-The latest versions of Netbeans, and IntelliJ work without issues.
-Eclipse should work as well, but I have not tested it, YMMV.
 
 
 ### Future works/TODO
