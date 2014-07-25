@@ -15,8 +15,8 @@ Fuzzer and a Fuzzer Maven plugin is available through the Central Repository <ht
 
 Group Id | Artifact Id | Version
 --- | --- | ---
-[`com.uwemeding`](http://search.maven.org/#browse%7C629099076) | [`fuzzer`](http://search.maven.org/#browse%7C247213999) | [1.0](http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer%7C1.0%7Cjar)
-[`com.uwemeding`](http://search.maven.org/#browse%7C629099076) | [`fuzzer-maven-plugin`](http://search.maven.org/#browse%7C1942614669) | [1.0](http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer-maven-plugin%7C1.0%7Cmaven-plugin)
+`com.uwemeding` | `fuzzer` | <a href="http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer%7C1.0%7Cjar" target="_blank">1.0</a>
+`com.uwemeding` | `fuzzer-maven-plugin` | <a href="http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer-maven-plugin%7C1.0%7Cmaven-plugin" target="_blank">1,0</a>
 
 
 ### Getting started, for development, debugging, poking around
