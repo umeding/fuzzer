@@ -62,13 +62,14 @@ Vi = Vmin + [(Vmax - Vmin) / (MAPsize - 1)] * i
 ```
 
 The membership for each fuzzy variable is usually defined as a
-normalized value between 0.0 and 1.0, however, in Fuzzer we are
+normalized value between `0.0` and `1.0`, however, in Fuzzer we are
 scaling them to a larger integer value for simplicity and numerical
 stability (though this has not been tested). For example, the range of
 `[0.0, 1.0]` for a defined membership is scaled into a range
 `[0, 255]`. 
 
 __Example__
+
 Here is a fuzzy set with triangular shapes:
 ```
     output veloc(-5 .. 5 step 0.1) {
@@ -96,6 +97,5 @@ discourse:
            0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
            0
     };
-}
 ```
 
