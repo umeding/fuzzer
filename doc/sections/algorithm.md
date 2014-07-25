@@ -61,9 +61,41 @@ subarray, with the index of its ith point given by:
 Vi = Vmin + [(Vmax - Vmin) / (MAPsize - 1)] * i
 ```
 
-For triangular or trapezoidal membership functions, any 2 points
-(&#181;, Vk)
+The membership for each fuzzy variable is usually defined as a
+normalized value between 0.0 and 1.0, however, in Fuzzer we are
+scaling them to a larger integer value for simplicity and numerical
+stability (though this has not been tested). For example, the range of
+`[0.0, 1.0]` for a defined membership is scaled into a range
+`[0, 255]`. 
+
+__Example__
+Here is a fuzzy set with triangular shapes:
 ```
-&#181;
+    output veloc(-5 .. 5 step 0.1) {
+        nb = {-5,1} {-2,1} {-1,0};
+        z = {-2,1} {0,1} {1,0};
+        pb = S[1,3,5](x);
+    }
+```
+The membership mapping for the fuzzy set `nb` looks as follows. The
+mapping scalar is `Kmap` is `1` as the allowable maximum map size is
+`256`. The computed map size is `101` in this case. The map of the
+fuzzy set `nb` can be calculated across the defined universe of
+discourse:
+```java
+    private final int[] veloc$nb = {
+         255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+         255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+         255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+         255, 230, 204, 179, 153, 128, 102,  77,  51,  26,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+           0
+    };
+}
 ```
 
