@@ -13,10 +13,10 @@ Simple Fuzzy Logic Tool for Java 8.
 
 Fuzzer and a Fuzzer Maven plugin is available through the Central Repository <http://search.maven.org>
 
-Group Id | Artifact Id
+Group Id | Artifact Id | Version
 --- | ---
-`com.uwemeding` | `fuzzer-maven-plugin`
-`com.uwemeding` | `fuzzer`
+`com.uwemeding` | `fuzzer-maven-plugin` | [1.0](http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer-maven-plugin%7C1.0%7Cmaven-plugin)
+`com.uwemeding` | `fuzzer` | [1.0](http://search.maven.org/#artifactdetails%7Ccom.uwemeding%7Cfuzzer%7C1.0%7Cjar)
 
 
 ### Getting started, for development, debugging, poking around
