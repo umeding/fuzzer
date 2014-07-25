@@ -6,9 +6,20 @@ Simple Fuzzy Logic Tool for Java 8.
 ## Documentation
 * [Syntax and Semantics](https://github.com/umeding/fuzzer/blob/master/doc/sections/syntax.md)
 * [Implementation Details](https://github.com/umeding/fuzzer/blob/master/doc/sections/algorithm.md)
+* [To do](https://github.com/umeding/fuzzer/blob/master/TODO.md)
 * [Licensing](https://github.com/umeding/fuzzer/blob/master/LICENSE)
 
-### Getting started
+### Getting started, the simple way
+
+Fuzzer and a Fuzzer Maven plugin is available through the Central Repository <http://search.maven.org>
+
+Group Id | Artifact Id
+--- | ---
+`com.uwemeding` | `fuzzer-maven-plugin`
+`com.uwemeding` | `fuzzer`
+
+
+### Getting started, for development, debugging, poking around
 
 Fuzzer is fully written in Java 8+ and its project is fully managed by
 [Maven](http://maven.apache.org "Maven") (v. 3).
@@ -56,7 +67,7 @@ There are a number of TODOs and additional features that need to be
 implemented to round out the current (simple) functionality. My intent
 is to keep Fuzzer small and simple.
 
-<h2 id="license">License</h2>
+### License
 
 Copyright (c) 2014, Uwe Meding
 
