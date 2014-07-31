@@ -66,6 +66,12 @@ There are a number of TODOs and additional features that need to be
 implemented to round out the current (simple) functionality. My intent
 is to keep Fuzzer small and simple.
 
+### Other resources/Background
+* <a href="http://www.amazon.com/Fuzzy-Logic-Engineering-Applications-Third/dp/047074376X" target="_blank">Fuzzy Logic with Engineering Applications, 3<sup>rd</sup> Ed.</a>
+* <a href="https://www.youtube.com/watch?v=H9SikB7HbSU" target="_blank" title="Fuzzy Sets">Fuzzy sets - A Primer (YouTube)</a>
+* <a href="https://www.youtube.com/watch?v=R4TPFpYXvS0" target="_blank" title="Fuzzy Logic Control Example">Fuzzy Logic Control Example (YouTube)</a>
+
+
 ### License
 
 Copyright (c) 2014, Uwe Meding
