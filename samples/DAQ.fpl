@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2014 Meding Software Technik -- All Rights Reserved.
+ *
+ * Data acquisition control. This is a simplified example of the rules
+ * that were used to manage the energy measurement acquisition of an
+ * energy monitoring system.
+ *
+ * Parameters:
+ * -- transmit rate
+ * -- backlog
+ * -- disk space
+ *
+ * Controls:
+ * -- rate of acquisition
+ * -- rate of compression
+ * -- rate of data drops
+ */
+program DAQ {
+    
+}

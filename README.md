@@ -75,7 +75,7 @@ is to keep Fuzzer small and simple.
 
 ### License
 
-Copyright (c) 2014, Uwe Meding
+Copyright (c) 2014 Meding Software Technik
 
 Fuzzer is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
