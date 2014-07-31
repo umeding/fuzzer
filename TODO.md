@@ -3,5 +3,5 @@
 * Complete implementation for external function
 * Add more internals documentation
 * Additional samples
-* Reference project implementation?
+* Plot input/output spaces
 *
